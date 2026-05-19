@@ -1,0 +1,11 @@
+import type { ROUTES } from '@/constants/routes';
+
+/**
+ * Parâmetros de cada tela da pilha principal.
+ * `undefined` = tela sem parâmetros na rota.
+ */
+export type RootStackParamList = {
+  [ROUTES.HOME]: undefined;
+  [ROUTES.MEALS]: undefined;
+  [ROUTES.PROFILE]: undefined;
+};
