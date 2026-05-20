@@ -6,6 +6,7 @@ import type { RootStackParamList } from '@/navigation/types';
 import { HomeScreen } from '@/screens/HomeScreen';
 import { MealsScreen } from '@/screens/MealsScreen';
 import { ProfileScreen } from '@/screens/ProfileScreen';
+import { AddNewMealsScreen } from '@/screens/AddNewMealsScreen';
 
 /** Pilha nativa tipada com as rotas do app */
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -39,6 +40,11 @@ export function RootNavigator() {
           name={ROUTES.PROFILE}
           component={ProfileScreen}
           options={{ title: 'Perfil' }}
+        />
+        <Stack.Screen
+          name={ROUTES.ADD_NEW_MEALS}
+          component={AddNewMealsScreen}
+          options={{ title: 'Adicionar Nova Refeição' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

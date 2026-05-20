@@ -9,4 +9,6 @@ export const ROUTES = {
   MEALS: 'Meals',
   /** Perfil e metas do usuário */
   PROFILE: 'Profile',
+  /** Adicionar nova refeição */
+  ADD_NEW_MEALS: 'AddNewMeals',
 } as const;

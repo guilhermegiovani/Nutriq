@@ -11,7 +11,7 @@ type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.MEALS>;
  * Lista e cadastro de refeições.
  * Integrará GET/POST /meals quando o backend existir.
  */
-export function MealsScreen(_props: Props) {
+export function MealsScreen({ navigation }: Props) {
   return (
     <ScreenContainer scrollable>
       <Text className="text-xl font-bold text-text">Refeições</Text>
@@ -20,7 +20,7 @@ export function MealsScreen(_props: Props) {
       </Text>
 
       <View className="mt-8 gap-3">
-        <Pressable className="rounded-xl bg-primary px-4 py-3 active:opacity-80">
+        <Pressable onPress={() => navigation.navigate(ROUTES.ADD_NEW_MEALS)} className="rounded-xl bg-primary px-4 py-3 active:opacity-80">
           <Text className="text-center font-semibold text-white">
             Adicionar refeição
           </Text>
