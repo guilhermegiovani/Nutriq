@@ -2,6 +2,7 @@ import { Form } from "../ui/Form";
 import { Input } from "../ui/Input";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { OptionButton } from "../ui/OptionButton";
 
 export function MealForm() {
 
@@ -10,6 +11,9 @@ export function MealForm() {
     const [amount, setAmount] = useState<number>(0);
 
     const [unit, setUnit] = useState<string>('g');
+
+    const [mealType, setMealType] = useState<MealType>('breakfast');
+
 
     return (
         <Form>
@@ -26,43 +30,44 @@ export function MealForm() {
             />
 
             <View className="flex-row gap-2.5">
-                <Pressable
-                    className={`flex-1 items-center justify-center rounded-lg px-4 py-3 active:opacity-80 ${
-                        unit === 'g'
-                            ? 'bg-primary'
-                            : 'border border-zinc-300 bg-zinc-200'
-                    }`}
-                    onPress={() => setUnit('g')}
-                >
-                    <Text
-                        className={
-                            unit === 'g'
-                                ? 'font-semibold text-white'
-                                : 'text-text'
-                        }
-                    >
-                        Gramas (g)
-                    </Text>
-                </Pressable>
+                <OptionButton
+                    text="Gramas (g)"
+                    active={unit === "g"}
+                    onPressButton={() => setUnit('g')}
+                />
 
-                <Pressable
-                    className={`flex-1 items-center justify-center rounded-lg px-4 py-3 active:opacity-80 ${
-                        unit === 'kg'
-                            ? 'bg-primary'
-                            : 'border border-zinc-300 bg-zinc-200'
-                    }`}
-                    onPress={() => setUnit('kg')}
-                >
-                    <Text
-                        className={
-                            unit === 'kg'
-                                ? 'font-semibold text-white'
-                                : 'text-text'
-                        }
-                    >
-                        Quilogramas (kg)
-                    </Text>
-                </Pressable>
+                <OptionButton
+                    text="Quilogramas (kg)"
+                    active={unit === "kg"}
+                    onPressButton={() => setUnit('kg')}
+                />
+            </View>
+
+            <View className="flex-row flex-wrap justify-between gap-2.5 w-full">
+
+                <OptionButton
+                    text="Café da manhã"
+                    active={mealType === "breakfast"}
+                    onPressButton={() => setMealType('breakfast')}
+                />
+
+                <OptionButton
+                    text="Almoço"
+                    active={mealType === "lunch"}
+                    onPressButton={() => setMealType('lunch')}
+                />
+
+                <OptionButton
+                    text="Lanche"
+                    active={mealType === "snack"}
+                    onPressButton={() => setMealType('snack')}
+                />
+
+                <OptionButton
+                    text="Jantar"
+                    active={mealType === "dinner"}
+                    onPressButton={() => setMealType('dinner')}
+                />
             </View>
         </Form>
     )
