@@ -1,4 +1,7 @@
-export const foods = [
+import type { Food } from '@/types/food';
+
+/** Mock local — depois virá da API / PostgreSQL */
+export const foods: Food[] = [
     {
       id: 1,
       name: "Arroz",

@@ -6,10 +6,10 @@ module.exports = {
   presets: [require('nativewind/preset')],
   theme: {
     extend: {
-      // Cores da marca Nutriq (ajuste depois no design)
+      // Paleta 1: verde (seleção) + âmbar (ação / salvar)
       colors: {
         primary: '#16a34a',
-        secondary: '#0f766e',
+        secondary: '#d97706',
         background: '#f8fafc',
         surface: '#ffffff',
         text: '#0f172a',

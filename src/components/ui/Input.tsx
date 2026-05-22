@@ -1,13 +1,25 @@
-import { TextInput } from "react-native";
+import { TextInput, type KeyboardTypeOptions } from 'react-native';
 
+type InputProps = {
+  placeholder: string;
+  value: string;
+  onChange: (text: string) => void;
+  keyboardType?: KeyboardTypeOptions;
+};
 
-export function Input({ placeholder, value, onChange }: { placeholder: string, value: string, onChange: (text: string) => void }) {
-    return (
-        <TextInput
-            placeholder={placeholder}
-            style={{ borderWidth: 1, borderColor: 'gray', padding: 10, borderRadius: 5 }}
-            value={value}
-            onChangeText={onChange}
-        />
-    )
+export function Input({
+  placeholder,
+  value,
+  onChange,
+  keyboardType = 'default',
+}: InputProps) {
+  return (
+    <TextInput
+      placeholder={placeholder}
+      className="rounded-lg border border-slate-300 bg-surface px-3 py-2.5 text-text"
+      value={value}
+      onChangeText={onChange}
+      keyboardType={keyboardType}
+    />
+  );
 }

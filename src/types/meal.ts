@@ -12,6 +12,8 @@ export type FoodItem = {
   id: string;
   /** Nome exibido (ex.: "Arroz integral") */
   name: string;
+  /** Quantidade consumida em gramas */
+  amountGrams: number;
   /** Calorias por porção informada */
   calories: number;
   /** Proteínas em gramas */
