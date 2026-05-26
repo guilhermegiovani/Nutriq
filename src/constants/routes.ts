@@ -11,4 +11,6 @@ export const ROUTES = {
   PROFILE: 'Profile',
   /** Adicionar nova refeição */
   ADD_NEW_MEALS: 'AddNewMeals',
+  /** Editar refeição */
+  UPDATE_MEALS: 'UpdateMeals',
 } as const;

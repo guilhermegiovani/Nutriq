@@ -14,9 +14,21 @@ import {
   toGrams,
 } from '@/utils/nutrition';
 
-export function MealForm() {
+type MealFormData = {
+  name: string;
+  amount: string;
+  unit: 'g' | 'kg';
+  mealType: MealType;
+};
+
+type MealFormProps = {
+  initialData?: MealFormData;
+  isEditing?: boolean;
+};
+
+export function MealForm({initialData, isEditing}: MealFormProps) {
   const navigation = useNavigation();
-  const { addMeal } = useMeals();
+  const { addMeal, updateMeal } = useMeals();
 
   // Estados dos campos do formulário
   const [name, setName] = useState('');
@@ -67,7 +79,12 @@ export function MealForm() {
       totalCalories: nutrition.calories,
     };
 
-    addMeal(meal);
+    if(isEditing) {
+      updateMeal(meal)
+    } else{
+      addMeal(meal);
+    }
+
     navigation.goBack();
   }
 
