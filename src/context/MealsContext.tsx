@@ -17,34 +17,28 @@ type MealsContextValue = {
   /** Adiciona uma refeição ao array */
   addMeal: (meal: Meal) => void;
   /** Salva no AsyncStorage  */
-  saveMeal: (meal: Meal) => void;
-  /** Carrega as refeições  */
-  loadMeal: () => void;
+  savedMealsStorage: (meal: Meal) => void;
   /** Deletar refeição */
-  deleteMeal: () => void
+  deleteMeal: (meal: Meal) => void
+  /** Deletar refeição */
+  updateMeal: (meal: Meal) => void
+  /** Carrega as refeições  */
+  loadMeals: () => void;
+
+  /** Meta calórica */
+  dailyGoal: number;
+  setDailyGoal: (goal: number) => void;
 };
 
 const MealsContext = createContext<MealsContextValue | null>(null);
 
 export function MealsProvider({ children }: { children: ReactNode }) {
   const [meals, setMeals] = useState<Meal[]>([]);
+  const [dailyGoal, setDailyGoal] = useState(0);
 
   useEffect(() => {
     loadMeals()
   }, [])
-
-  const addMeal = useCallback((meal: Meal) => {
-    try {
-      const newMeals = [meal, ...meals]
-  
-      setMeals(newMeals);
-  
-      savedMealsStorage(newMeals);
-
-    } catch(err) {
-      console.log("Erro ao adicionar refeição", err)
-    }
-  }, [meals]);
 
   const savedMealsStorage = useCallback(async (meals: Meal): Promise<void> => {
     try {
@@ -56,6 +50,20 @@ export function MealsProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  useEffect(() => {
+    savedMealsStorage(meals);
+  }, [meals]);
+
+  const addMeal = useCallback((meal: Meal) => {
+    try {
+      const newMeals = [meal, ...meals]
+
+      setMeals(newMeals);
+    } catch(err) {
+      console.log("Erro ao adicionar refeição", err)
+    }
+  }, [meals]);
+
   const loadMeals = useCallback(async (): Promise<void> => {
     try {
       const savedMeals = await AsyncStorage.getItem("meals")
@@ -66,10 +74,9 @@ export function MealsProvider({ children }: { children: ReactNode }) {
     }
   })
 
-  const deleteMeal = useCallback(async (meal: Meal): Promise<void> => {
+  const deleteMeal = useCallback(async (mealItem: Meal): Promise<void> => {
     try {
-      const newArray = meals.filter((item) => item.items[0].id !== meal.id)
-      //const newArray = meals.filter((item) => item)
+      const newArray = meals.filter((item) => item.items[0].id !== mealItem.id)
       setMeals(newArray)
    
     } catch(err) {
@@ -77,17 +84,33 @@ export function MealsProvider({ children }: { children: ReactNode }) {
     }
   })
 
-  const updateMeal = useCallback(async (meal: Meal, type: String): Promise<void> => {
+  const updateMeal = useCallback(async (meal: Meal): Promise<void> => {
     try {
-      console.log("Meal Edit: ", meal)
-      console.log("Meal Type: ", type)
+      const updateMeals = meals.map((m) => {
+        if(m.id === meal.id) {
+          return meal
+        }
+
+        return m
+      })
+
+      setMeals(updateMeals)
    
     } catch(err) {
       console.log("Erro ao deletar refeição.", err)
     }
   })
 
-  const value = useMemo(() => ({ meals, addMeal, savedMealsStorage, loadMeals, deleteMeal, updateMeal }), [meals, addMeal, savedMealsStorage, loadMeals, deleteMeal, updateMeal]);
+  const value = useMemo(() => ({
+    meals,
+    addMeal,
+    savedMealsStorage,
+    loadMeals,
+    deleteMeal,
+    updateMeal,
+    dailyGoal,
+    setDailyGoal
+  }), [meals, addMeal, savedMealsStorage, loadMeals, deleteMeal, updateMeal, dailyGoal, setDailyGoal]);
 
   return (
     <MealsContext.Provider value={value}>{children}</MealsContext.Provider>

@@ -31,10 +31,10 @@ export function MealForm({initialData, isEditing}: MealFormProps) {
   const { addMeal, updateMeal } = useMeals();
 
   // Estados dos campos do formulário
-  const [name, setName] = useState('');
-  const [amountText, setAmountText] = useState('');
+  const [name, setName] = useState(initialData?.name || '');
+  const [amountText, setAmountText] = useState(initialData?.grams || '');
   const [unit, setUnit] = useState<'g' | 'kg'>('g');
-  const [mealType, setMealType] = useState<MealType>('breakfast');
+  const [mealType, setMealType] = useState<MealType>(initialData?.typeMeal || 'breakfast');
   const [error, setError] = useState('');
 
   const food = useMemo(() => findFoodByName(name), [name]);
@@ -62,7 +62,9 @@ export function MealForm({initialData, isEditing}: MealFormProps) {
     const nutrition = calculateFromFood(food, grams);
 
     const meal: Meal = {
-      id: String(Date.now()),
+      id: isEditing
+      ? initialData.id
+      : String(Date.now()),
       type: mealType,
       date: new Date().toISOString().slice(0, 10),
       items: [

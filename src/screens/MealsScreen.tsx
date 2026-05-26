@@ -19,7 +19,7 @@ export function MealsScreen({ navigation }: Props) {
     <ScreenContainer scrollable>
       <Text className="text-xl font-bold text-text">Refeições</Text>
       <Text className="mt-2 text-muted">
-        Total do dia: 56 kcal · {meals.length} registro(s)
+        Total do dia: {totalDay} kcal · {meals.length} registro(s)
       </Text>
 
       <View className="mt-6 gap-3">

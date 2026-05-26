@@ -47,7 +47,9 @@ export function MealCard({ meal }: MealCardProps) {
         </Pressable>
 
         <Pressable
-          onPress={() => navigation.navigate(ROUTES.UPDATE_MEALS)}
+          onPress={() => navigation.navigate(ROUTES.UPDATE_MEALS, {
+            meal
+          })}
           className="items-center justify-center rounded-full p-2 active:opacity-70"
         >
           <Text>
