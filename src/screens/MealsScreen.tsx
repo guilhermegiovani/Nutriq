@@ -12,8 +12,10 @@ type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.MEALS>;
 export function MealsScreen({ navigation }: Props) {
   const { meals } = useMeals();
   console.log("Meals Screen", meals)
+  const today = new Date().toISOString().slice(0, 10);
+  const mealsToday = meals.filter((meal) => meal.date === today)
 
-  const totalDay = meals?.reduce((sum, meal) => sum + meal.totalCalories, 0); {totalDay}
+  const totalDay = mealsToday?.reduce((sum, meal) => sum + meal.totalCalories, 0);
 
   return (
     <ScreenContainer scrollable>

@@ -7,6 +7,7 @@ import { env } from '@/config/env';
 import type { RootStackParamList } from '@/navigation/types';
 import { useMeals } from '@/context/MealsContext';
 import { Input } from '@/components/ui/Input';
+import { InfoCard } from '@/components/ui/InfoCard';
 import { useState } from 'react';
 
 type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.PROFILE>;
@@ -15,8 +16,18 @@ type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.PROFILE>;
  * Perfil do usuário, metas calóricas e configurações.
  */
 export function ProfileScreen(_props: Props) {
-  const { dailyGoal, setDailyGoal } = useMeals();
+  const { meals, dailyGoal, setDailyGoal } = useMeals()
+  const today = new Date().toISOString().slice(0, 10);
   const [isActive, setIsActive] = useState<boolean>(false)
+
+  const consumedToday = meals.filter((meal) => meal.date === today)
+  const totalConsumed = consumedToday?.reduce((sum, meal) => sum + meal.totalCalories, 0);
+  const remainingCalories = dailyGoal - totalConsumed;
+  const progressPercentage = dailyGoal > 0
+    ? (totalConsumed / dailyGoal) * 100
+    : 0;
+
+  console.log("Total consumido: ", consumedToday)
 
   return (
     <ScreenContainer>
@@ -31,34 +42,51 @@ export function ProfileScreen(_props: Props) {
       </View>
 
       <View className='flex gap-2 mt-4'>
-        <Text className="text-xl font-bold text-text">
-          Meta Calórica
-        </Text>
 
-        <View className='flex flex-row justify-between'>
-          {isActive
-            ? <Input
-              placeholder='Meta kcal'
-              value={String(dailyGoal)}
-              onChange={(goal) => setDailyGoal(Number(goal))}
-              className='w-[100px]'
-            />
-            : <Text className='items-center px-4 py-3'>
-              {dailyGoal} kcal
-            </Text>
+        <InfoCard title="Meta Calórica Diária">
+          <View className="flex-row items-center justify-between gap-3">
+            {isActive ? (
+              <Input
+                placeholder="Meta kcal"
+                value={String(dailyGoal)}
+                onChange={(goal) => setDailyGoal(Number(goal))}
+                className="flex-1"
+              />
+            ) : (
+              <Text className="text-2xl font-bold text-text">
+                {dailyGoal} kcal
+              </Text>
+            )}
 
-          }
+            <Pressable
+              className="items-center justify-center rounded-lg bg-primary px-4 py-3 active:opacity-80"
+              onPress={() => setIsActive(!isActive)}
+            >
+              <Text className="font-semibold text-white">
+                {isActive ? 'Salvar' : 'Editar'}
+              </Text>
+            </Pressable>
+          </View>
+        </InfoCard>
 
-          <Pressable
-            className="items-center bg-primary justify-center rounded-lg px-4 py-3 w-[200px] active:opacity-80"
-            onPress={() => setIsActive(!isActive)}
-          >
-            {isActive
-              ? <Text className='font-semibold text-white'>Salvar meta</Text>
-              : <Text className='font-semibold text-white'>Editar meta</Text>
-            }
-          </Pressable>
-        </View>
+        <InfoCard title="Consumido hoje">
+          <Text className="text-2xl font-bold text-text">
+            {totalConsumed} kcal
+          </Text>
+        </InfoCard>
+
+        <InfoCard title="Restante">
+          <Text className="text-2xl font-bold text-text">
+            {remainingCalories} kcal
+          </Text>
+        </InfoCard>
+
+        <InfoCard title="Progresso">
+          <Text className="text-2xl font-bold text-primary">
+            {progressPercentage.toFixed(0)}%
+          </Text>
+        </InfoCard>
+
       </View>
     </ScreenContainer>
   );
