@@ -9,6 +9,7 @@ import { useMeals } from '@/context/MealsContext';
 import { Input } from '@/components/ui/Input';
 import { InfoCard } from '@/components/ui/InfoCard';
 import { useState } from 'react';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 
 type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.PROFILE>;
 
@@ -27,7 +28,7 @@ export function ProfileScreen(_props: Props) {
     ? (totalConsumed / dailyGoal) * 100
     : 0;
 
-  console.log("Total consumido: ", consumedToday)
+  const progressWidth = Math.min(progressPercentage, 100);
 
   return (
     <ScreenContainer>
@@ -85,6 +86,8 @@ export function ProfileScreen(_props: Props) {
           <Text className="text-2xl font-bold text-primary">
             {progressPercentage.toFixed(0)}%
           </Text>
+          
+          <ProgressBar progressWidth={progressWidth} />
         </InfoCard>
 
       </View>
