@@ -13,6 +13,7 @@ import {
   findFoodByName,
   toGrams,
 } from '@/utils/nutrition';
+import { AddMealItemsList } from './AddMealItemsList';
 
 type MealFormData = {
   name: string;
@@ -26,7 +27,7 @@ type MealFormProps = {
   isEditing?: boolean;
 };
 
-export function MealForm({initialData, isEditing}: MealFormProps) {
+export function MealForm({ initialData, isEditing }: MealFormProps) {
   const navigation = useNavigation();
   const { addMeal, updateMeal } = useMeals();
 
@@ -39,6 +40,8 @@ export function MealForm({initialData, isEditing}: MealFormProps) {
 
   const food = useMemo(() => findFoodByName(name), [name]);
   const amount = Number(amountText.replace(',', '.'));
+
+  const [mealItems, setMealItems] = useState<[]>([])
 
   // Prévia de calorias enquanto o usuário preenche
   const preview = useMemo(() => {
@@ -61,33 +64,66 @@ export function MealForm({initialData, isEditing}: MealFormProps) {
     const grams = toGrams(amount, unit);
     const nutrition = calculateFromFood(food, grams);
 
+    if (mealItems.length === 0) {
+      setError('Adicione pelo menos um alimento.');
+      return;
+    }
+
+    const totalCalories = mealItems.reduce(
+      (sum, item) => sum + item.calories,
+      0
+    );
+
     const meal: Meal = {
       id: isEditing
-      ? initialData.id
-      : String(Date.now()),
+        ? initialData.id
+        : String(Date.now()),
       type: mealType,
       date: new Date().toISOString().slice(0, 10),
-      items: [
-        {
-          id: String(food.id),
-          name: food.name,
-          amountGrams: grams,
-          calories: nutrition.calories,
-          protein: nutrition.protein,
-          carbs: nutrition.carbs,
-          fat: nutrition.fat,
-        },
-      ],
-      totalCalories: nutrition.calories,
+      items: mealItems,
+      totalCalories,
     };
 
-    if(isEditing) {
+    console.log("Meal: ", meal)
+
+    if (isEditing) {
       updateMeal(meal)
-    } else{
+    } else {
       addMeal(meal);
     }
 
     navigation.goBack();
+  }
+
+  function addItem() {
+    if (!food) return;
+    if (!amount || amount <= 0) return;
+
+    if (!amount || amount <= 0) {
+      setError('Informe uma quantidade válida.');
+      return;
+    }
+
+    const grams = toGrams(amount, unit);
+    const nutrition = calculateFromFood(food, grams);
+
+    const item = {
+      id: String(food.id),
+      name: food.name,
+      amountGrams: grams,
+      calories: nutrition.calories,
+      protein: nutrition.protein,
+      carbs: nutrition.carbs,
+      fat: nutrition.fat,
+    }
+
+    setMealItems((prev) => [...prev, item])
+  }
+
+  function removeItem(id: string) {
+    setMealItems((prev) =>
+      prev.filter((item) => item.id !== id)
+    );
   }
 
   return (
@@ -155,6 +191,15 @@ export function MealForm({initialData, isEditing}: MealFormProps) {
       </View>
 
       {error ? <Text className="text-sm text-red-600">{error}</Text> : null}
+
+      <Pressable
+        className="w-full items-center justify-center rounded-lg bg-secondary px-4 py-3 active:opacity-80"
+        onPress={addItem}
+      >
+        <Text className="font-semibold text-white">Adicionar alimento</Text>
+      </Pressable>
+
+      <AddMealItemsList items={mealItems} onRemoveItem={removeItem} />
 
       <Pressable
         className="w-full items-center justify-center rounded-lg bg-secondary px-4 py-3 active:opacity-80"
