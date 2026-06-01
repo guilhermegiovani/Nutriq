@@ -51,7 +51,7 @@ export function ProfileScreen(_props: Props) {
                 placeholder="Meta kcal"
                 value={String(dailyGoal)}
                 onChange={(goal) => setDailyGoal(Number(goal))}
-                className="flex-1"
+              // className="flex-1"
               />
             ) : (
               <Text className="text-2xl font-bold text-text">

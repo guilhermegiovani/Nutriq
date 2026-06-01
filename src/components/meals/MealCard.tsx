@@ -1,4 +1,4 @@
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackNavigationProp  } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '@/navigation/types';
 import { Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -15,13 +15,13 @@ type MealCardProps = {
   //navigation: Props;
 };
 
-type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, typeof ROUTES.MEALS>; // NativeStackNavigationProp
 
 /** Card de uma refeição salva na lista */
 export function MealCard({ meal }: MealCardProps) {
   const navigation = useNavigation<NavigationProps>()
 
-  const item = meal.items[0];
+  const items = meal.items;
   const { deleteMeal } = useMeals()
 
   return (
@@ -30,15 +30,28 @@ export function MealCard({ meal }: MealCardProps) {
         <Text className="text-xs font-medium text-muted">
           {MEAL_TYPE_LABELS[meal.type]}
         </Text>
-        <Text className="mt-1 text-base font-semibold text-text">{item.name}</Text>
-        <Text className="mt-1 text-sm text-muted">
-          {item.amountGrams} g · {meal.totalCalories} kcal
-        </Text>
+        {items.map((item) => (
+          <View key={item.id} className="mt-2">
+            <Text className="mt-1 text-base font-semibold text-text">{item.name}</Text>
+            <Text className="mt-1 text-sm text-muted">
+              {item.amountGrams} g · {item.calories} kcal
+            </Text>
+
+          </View>
+
+        ))}
+
+        <View className="mt-3 border-t border-slate-200 pt-2">
+          <Text className="text-base font-semibold text-text">
+            Total: {meal.totalCalories} kcal
+          </Text>
+        </View>
       </View>
+
 
       <View className='flex justify-center'>
         <Pressable
-          onPress={() => deleteMeal(item)}
+          onPress={() => deleteMeal(meal)}
           className="items-center justify-center rounded-full p-2 active:opacity-70"
         >
           <Text>

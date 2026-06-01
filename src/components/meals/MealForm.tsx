@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { OptionButton } from '@/components/ui/OptionButton';
 import { useMeals } from '@/context/MealsContext';
 import { foods } from '@/data/foods';
-import type { Meal, MealType } from '@/types/meal';
+import type { FoodItem, Meal, MealType } from '@/types/meal';
 import {
   calculateFromFood,
   findFoodByName,
@@ -15,15 +15,12 @@ import {
 } from '@/utils/nutrition';
 import { AddMealItemsList } from './AddMealItemsList';
 
-type MealFormData = {
-  name: string;
-  amount: string;
-  unit: 'g' | 'kg';
-  mealType: MealType;
-};
+// type MealFormData = {
+
+// };
 
 type MealFormProps = {
-  initialData?: MealFormData;
+  initialData?: Meal;
   isEditing?: boolean;
 };
 
@@ -32,16 +29,16 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
   const { addMeal, updateMeal } = useMeals();
 
   // Estados dos campos do formulário
-  const [name, setName] = useState(initialData?.name || '');
-  const [amountText, setAmountText] = useState(initialData?.grams || '');
+  const [name, setName] = useState('');
+  const [amountText, setAmountText] = useState('');
   const [unit, setUnit] = useState<'g' | 'kg'>('g');
-  const [mealType, setMealType] = useState<MealType>(initialData?.typeMeal || 'breakfast');
+  const [mealType, setMealType] = useState<MealType>('breakfast');
   const [error, setError] = useState('');
 
   const food = useMemo(() => findFoodByName(name), [name]);
   const amount = Number(amountText.replace(',', '.'));
 
-  const [mealItems, setMealItems] = useState<[]>([])
+  const [mealItems, setMealItems] = useState<FoodItem[]>(initialData?.items || []);
 
   // Prévia de calorias enquanto o usuário preenche
   const preview = useMemo(() => {
@@ -76,15 +73,13 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
 
     const meal: Meal = {
       id: isEditing
-        ? initialData.id
+        ? initialData!.id
         : String(Date.now()),
       type: mealType,
       date: new Date().toISOString().slice(0, 10),
       items: mealItems,
       totalCalories,
     };
-
-    console.log("Meal: ", meal)
 
     if (isEditing) {
       updateMeal(meal)
@@ -124,6 +119,17 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
     setMealItems((prev) =>
       prev.filter((item) => item.id !== id)
     );
+  }
+
+  function editItem(id: string) {
+    const itemToEdit = mealItems.find((item) => item.id === id);
+    if (!itemToEdit) return;
+
+    setName(itemToEdit.name);
+    setAmountText(String(itemToEdit.amountGrams));
+    setUnit('g');
+    setMealType(mealType);
+    removeItem(id);
   }
 
   return (
@@ -199,7 +205,7 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
         <Text className="font-semibold text-white">Adicionar alimento</Text>
       </Pressable>
 
-      <AddMealItemsList items={mealItems} onRemoveItem={removeItem} />
+      <AddMealItemsList items={mealItems} onRemoveItem={removeItem} onEditItem={editItem} />
 
       <Pressable
         className="w-full items-center justify-center rounded-lg bg-secondary px-4 py-3 active:opacity-80"

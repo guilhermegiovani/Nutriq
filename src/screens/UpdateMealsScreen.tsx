@@ -14,11 +14,12 @@ type Props = NativeStackScreenProps<
 export function UpdateMealsScreen({ route }: Props) {
   const { meal } = route.params;
 
-  const initialMeal = {
+  const initialMealItems = {
     id: meal.id,
-    name: meal.items[0].name,
-    grams: String(meal.items[0].amountGrams),
-    typeMeal: meal.type
+    type: meal.type,
+    date: meal.date,
+    items: meal.items,
+    totalCalories: meal.totalCalories
   }
 
   // console.log("Initial Meal: ", initialMeal)
@@ -26,7 +27,7 @@ export function UpdateMealsScreen({ route }: Props) {
   return (
     <ScreenContainer scrollable>
       <Text className="mb-4 text-xl font-bold text-text">Editar refeição</Text>
-      <MealForm initialData={initialMeal} isEditing={true} />
+      <MealForm initialData={initialMealItems} isEditing={true} />
     </ScreenContainer>
   );
 }

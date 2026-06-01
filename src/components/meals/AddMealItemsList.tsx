@@ -1,14 +1,17 @@
 import { Text, View, Pressable } from 'react-native';
-import { Trash2 } from 'lucide-react-native'
+import { Trash2, Pencil } from 'lucide-react-native'
 import { useState } from 'react';
+import { FoodItem } from '@/types/meal';
+
 
 type AddMealItemsListProps = {
-    items: MealItems[],
+    items: FoodItem[],
     onRemoveItem: (id: string) => void;
+    onEditItem: (id: string) => void;
 };
 
 export function AddMealItemsList({
-    items, onRemoveItem
+    items, onRemoveItem, onEditItem
 }: AddMealItemsListProps) {
     return (
         <View className="mt-4 gap-2">
@@ -27,14 +30,25 @@ export function AddMealItemsList({
                         </Text>
                     </View>
 
-                    <Pressable
-                        onPress={() => onRemoveItem(item.id)}
-                        className="items-center justify-center rounded-full p-2 active:opacity-70"
-                    >
-                        <Text>
-                            <Trash2 size={20} color="#ef4444" />
-                        </Text>
-                    </Pressable>
+                    <View>
+                        <Pressable
+                            onPress={() => onRemoveItem(item.id)}
+                            className="items-center justify-center rounded-full p-2 active:opacity-70"
+                        >
+                            <Text>
+                                <Trash2 size={20} color="#ef4444" />
+                            </Text>
+                        </Pressable>
+
+                        <Pressable
+                            onPress={() => onEditItem(item.id)}
+                            className="items-center justify-center rounded-full p-2 active:opacity-70"
+                        >
+                            <Text>
+                                <Pencil size={20} color="#3b82f6" />
+                            </Text>
+                        </Pressable>
+                    </View>
                 </View>
             ))}
         </View>
