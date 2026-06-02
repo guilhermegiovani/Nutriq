@@ -38,6 +38,15 @@ export function HomeScreen({ navigation }: Props) {
             Meu perfil
           </Text>
         </Pressable>
+
+        <Pressable
+          className="rounded-xl border border-secondary px-4 py-3 active:opacity-80"
+          onPress={() => navigation.navigate(ROUTES.HISTORICAL)}
+        >
+          <Text className="text-center font-semibold text-secondary">
+            Histórico de refeições
+          </Text>
+        </Pressable>
       </View>
     </ScreenContainer>
   );

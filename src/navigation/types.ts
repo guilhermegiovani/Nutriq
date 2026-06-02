@@ -9,6 +9,7 @@ export type RootStackParamList = {
   [ROUTES.HOME]: undefined;
   [ROUTES.MEALS]: undefined;
   [ROUTES.PROFILE]: undefined;
+  [ROUTES.HISTORICAL]: undefined;
   [ROUTES.ADD_NEW_MEALS]: undefined;
   [ROUTES.UPDATE_MEALS]: { meal: Meal };
 };

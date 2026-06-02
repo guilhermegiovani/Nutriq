@@ -9,6 +9,8 @@ export const ROUTES = {
   MEALS: 'Meals',
   /** Perfil e metas do usuário */
   PROFILE: 'Profile',
+  /** Histórico de refeições */
+  HISTORICAL: 'Historical',
   /** Adicionar nova refeição */
   ADD_NEW_MEALS: 'AddNewMeals',
   /** Editar refeição */
