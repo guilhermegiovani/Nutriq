@@ -32,7 +32,7 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
   const [name, setName] = useState('');
   const [amountText, setAmountText] = useState('');
   const [unit, setUnit] = useState<'g' | 'kg'>('g');
-  const [mealType, setMealType] = useState<MealType>('breakfast');
+  const [mealType, setMealType] = useState<MealType>(initialData?.type || 'breakfast');
   const [error, setError] = useState('');
 
   const food = useMemo(() => findFoodByName(name), [name]);
@@ -48,18 +48,6 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
   }, [food, amount, unit]);
 
   function handleSave() {
-    if (!food) {
-      setError(`Alimento não encontrado. Use: ${foods.map((f) => f.name).join(', ')}`);
-      return;
-    }
-
-    if (!amount || amount <= 0) {
-      setError('Informe uma quantidade válida.');
-      return;
-    }
-
-    const grams = toGrams(amount, unit);
-    const nutrition = calculateFromFood(food, grams);
 
     if (mealItems.length === 0) {
       setError('Adicione pelo menos um alimento.');
@@ -76,7 +64,9 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
         ? initialData!.id
         : String(Date.now()),
       type: mealType,
-      date: new Date().toISOString().slice(0, 10),
+      date: isEditing
+        ? initialData!.date
+        : new Date().toISOString().slice(0, 10),
       items: mealItems,
       totalCalories,
     };
@@ -103,7 +93,7 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
     const nutrition = calculateFromFood(food, grams);
 
     const item = {
-      id: String(food.id),
+      id: `${food.id}-${Date.now()}`,
       name: food.name,
       amountGrams: grams,
       calories: nutrition.calories,
@@ -111,6 +101,8 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
       carbs: nutrition.carbs,
       fat: nutrition.fat,
     }
+
+    console.log('Adding item: ', item.id);
 
     setMealItems((prev) => [...prev, item])
   }
