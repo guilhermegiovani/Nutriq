@@ -1,3 +1,6 @@
+/**
+ * Utilitários de nutrição para cálculo de macros e conversão de unidades.
+ */
 import { foods } from '@/data/foods';
 import type { Food } from '@/types/food';
 

@@ -1,3 +1,7 @@
+/**
+ * Formulário de criação e edição de refeições.
+ * Permite adicionar alimentos, escolher unidade e salvar total calórico.
+ */
 import { useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';

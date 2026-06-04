@@ -1,3 +1,6 @@
+/**
+ * Campo de entrada reutilizável com estilo NativeWind.
+ */
 import clsx from 'clsx';
 import { TextInput, type KeyboardTypeOptions } from 'react-native';
 

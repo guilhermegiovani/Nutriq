@@ -1,3 +1,7 @@
+/**
+ * Tela de listagem de refeições.
+ * Exibe total diário e permite adicionar novas refeições.
+ */
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Pressable, Text, View } from 'react-native';
 

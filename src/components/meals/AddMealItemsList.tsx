@@ -1,3 +1,7 @@
+/**
+ * Componente que exibe os alimentos adicionados à refeição.
+ * Fornece botões para edição e remoção de cada item.
+ */
 import { Text, View, Pressable } from 'react-native';
 import { Trash2, Pencil } from 'lucide-react-native'
 import { useState } from 'react';

@@ -1,3 +1,7 @@
+/**
+ * Contexto global de refeições e meta calórica.
+ * Mantém estado em memória e persiste dados no AsyncStorage.
+ */
 import {
   createContext,
   useCallback,

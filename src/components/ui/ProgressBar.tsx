@@ -1,3 +1,6 @@
+/**
+ * Barra de progresso visual para exibir a meta calórica diária.
+ */
 import { View } from "react-native";
 
 type ProgressBarProps = {

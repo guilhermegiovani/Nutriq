@@ -1,3 +1,6 @@
+/**
+ * Botão de opção para seleção de unidades e segmentos de refeição.
+ */
 import { Pressable, Text, View } from "react-native";
 import clsx from "clsx"
 

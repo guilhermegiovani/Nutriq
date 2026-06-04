@@ -1,3 +1,7 @@
+/**
+ * Tela de histórico agrupado por data.
+ * Calcula totais diários de calorias e exibe o consumo por refeição.
+ */
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { useMeals } from "@/context/MealsContext";
 import { Text, View } from "react-native";
@@ -5,11 +9,7 @@ import { MEAL_TYPE_LABELS } from '@/constants/mealLabels';
 
 export function HistoricalScreen() {
     const { meals } = useMeals();
-    // const historicalMeals = meals.map((meal) => ({
-    //     id: meal.id,
-    //     items: meal.items,
-    //     date: meal.date,
-    // }));
+    
     const sortedMeals = [...meals].sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );

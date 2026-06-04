@@ -1,3 +1,7 @@
+/**
+ * Tela de edição de refeição existente.
+ * Inicializa o formulário com dados já salvos.
+ */
 import { Text } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '@/navigation/types';

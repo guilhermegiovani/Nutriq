@@ -1,3 +1,6 @@
+/**
+ * Ponto de entrada do Expo para registrar o componente raiz do aplicativo.
+ */
 import './global.css';
 
 import { registerRootComponent } from 'expo';

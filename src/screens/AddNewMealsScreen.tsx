@@ -1,3 +1,7 @@
+/**
+ * Tela para cadastro de nova refeição.
+ * Reutiliza MealForm para registrar alimentos e calorias.
+ */
 import { Text } from 'react-native';
 
 import { MealForm } from '@/components/meals/MealForm';

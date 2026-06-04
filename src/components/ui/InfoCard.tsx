@@ -1,3 +1,6 @@
+/**
+ * Cartão de informação usado em perfis e métricas.
+ */
 import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
