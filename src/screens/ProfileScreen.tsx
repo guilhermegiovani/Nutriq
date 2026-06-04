@@ -87,7 +87,7 @@ export function ProfileScreen(_props: Props) {
             {progressPercentage.toFixed(0)}%
           </Text>
           
-          <ProgressBar progressWidth={progressWidth} />
+          <ProgressBar percentage={progressWidth} />
         </InfoCard>
 
       </View>

@@ -60,32 +60,6 @@ export function HistoricalScreen() {
 
                 </View>
             ))}
-
-            {/* {sortedMeals.map((meal) => (
-                <View key={meal.id} className="mt-2 rounded-lg bg-card p-4">
-                    <Text className="mt-4 text-base text-muted">
-                        {meal.date}
-                    </Text>
-
-                    <View className="mt-2 border-t border-gray-300" />
-
-                    <Text className="text-lg font-semibold text-text mt-2">
-                        {MEAL_TYPE_LABELS[meal.type]}
-                    </Text>
-
-                    {meal.items.map((item) => (
-                        <View key={item.id} className="mt-2">
-                            <Text className="text-base text-text">
-                                - {item.name} - {item.amountGrams}g - {item.calories} kcal
-                            </Text>
-                        </View>
-                    ))}
-
-                    <Text className="text-base text-muted mt-2">
-                        Total: {meal.totalCalories} kcal
-                    </Text>
-                </View>
-            ))} */}
         </ScreenContainer>
     );
 }

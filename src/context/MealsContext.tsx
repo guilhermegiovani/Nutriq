@@ -40,26 +40,47 @@ export function MealsProvider({ children }: { children: ReactNode }) {
     loadMeals()
   }, [])
 
+  useEffect(() => {
+    loadDailyGoal()
+  }, [])
+
   const savedMealsStorage = useCallback(async (meals: Meal[]): Promise<void> => {
     try {
       const jsonData = JSON.stringify(meals);
-      
+
       await AsyncStorage.setItem("meals", jsonData);
-    } catch(err) {
+    } catch (err) {
       console.error("Erro ao salvar refeição: ", err);
     }
   }, []);
 
+  const savedDailyGoalStorage = useCallback(async (goal: number): Promise<void> => {
+    try {
+      const jsonData = JSON.stringify(goal);
+
+      await AsyncStorage.setItem("dailyGoal", jsonData);
+    } catch (err) {
+      console.error("Erro ao salvar meta calórica: ", err);
+    }
+  }, []);
+
   useEffect(() => {
+    console.log("Estado meals mudou:", meals);
+    console.log("É array?", Array.isArray(meals));
+
     savedMealsStorage(meals);
   }, [meals]);
+
+  useEffect(() => {
+    savedDailyGoalStorage(dailyGoal);
+  }, [dailyGoal]);
 
   const addMeal = useCallback((meal: Meal) => {
     try {
       const newMeals = [meal, ...meals]
 
       setMeals(newMeals);
-    } catch(err) {
+    } catch (err) {
       console.log("Erro ao adicionar refeição", err)
     }
   }, [meals]);
@@ -68,9 +89,26 @@ export function MealsProvider({ children }: { children: ReactNode }) {
     try {
       const savedMeals = await AsyncStorage.getItem("meals")
       const parsedMeals = savedMeals ? JSON.parse(savedMeals) : []
+
+      if (!Array.isArray(parsedMeals)) {
+        console.warn("Meals inválido no storage:", parsedMeals);
+        setMeals([]);
+        return;
+      };
+      
       setMeals(parsedMeals)
-    } catch(err) {
+    } catch (err) {
       console.log("Erro ao carregar refeições.", err)
+    }
+  }, [])
+
+  const loadDailyGoal = useCallback(async (): Promise<void> => {
+    try {
+      const savedGoal = await AsyncStorage.getItem("dailyGoal")
+      const parsedGoal = savedGoal ? JSON.parse(savedGoal) : 0
+      setDailyGoal(parsedGoal)
+    } catch (err) {
+      console.log("Erro ao carregar meta calórica.", err)
     }
   }, [])
 
@@ -78,8 +116,8 @@ export function MealsProvider({ children }: { children: ReactNode }) {
     try {
       const newArray = meals.filter((item) => item.id !== mealItem.id)
       setMeals(newArray)
-   
-    } catch(err) {
+
+    } catch (err) {
       console.log("Erro ao deletar refeição.", err)
     }
   }, [meals])
@@ -87,7 +125,7 @@ export function MealsProvider({ children }: { children: ReactNode }) {
   const updateMeal = useCallback(async (meal: Meal): Promise<void> => {
     try {
       const updateMeals = meals.map((m) => {
-        if(m.id === meal.id) {
+        if (m.id === meal.id) {
           return meal
         }
 
@@ -95,8 +133,8 @@ export function MealsProvider({ children }: { children: ReactNode }) {
       })
 
       setMeals(updateMeals)
-   
-    } catch(err) {
+
+    } catch (err) {
       console.log("Erro ao deletar refeição.", err)
     }
   }, [meals])
