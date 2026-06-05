@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Nutriq",
-    "slug": "Nutriq",
+    "slug": "nutriq",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,7 +21,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.guilhermenobre.nutriq"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,6 +32,12 @@
     },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "70f8bc11-ae27-47f5-af5c-ad4a4defd5a6"
+      }
+    },
+    "owner": "guilherme_nobre"
   }
 }
