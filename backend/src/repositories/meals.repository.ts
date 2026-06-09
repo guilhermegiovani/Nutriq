@@ -1,5 +1,7 @@
+import pool from "../database/db.js";
+import type { CreateMealDTO, Meal } from "../types/meals.types.js";
 
-let meals = [
+let meals: Meal[] = [
     {
         id: 1,
         name: 'Meal 1',
@@ -21,47 +23,33 @@ let meals = [
         description: 'Description for Meal 4'
     },
 ];
-export function getRepositoryMeals() {
 
-    return meals;
+export async function getRepositoryMeals(): Promise<Meal[]> {
+    const mealsDB = await pool.query('SELECT * FROM meals');
+
+    return mealsDB.rows;
 }
 
-export function getMealById(mealId: number) {
-    const meal = meals.find(meal => meal.id === mealId);
-    return meal;
+export async function getMealByIdRepository(mealId: number) {
+    const meal = await pool.query('SELECT * FROM meals WHERE id = $1', [mealId]);
+    return meal.rows[0];
 }
 
-export function createMealRepository(mealData: { name: string, description: string }) {
+export async function createMealRepository(mealData: CreateMealDTO) {
     // Here you would normally save the meal to a database and return the created meal
-    const newMeal = {
-        id: Math.floor(Math.random() * 1000), // Just a random ID for demonstration
-        name: mealData.name,
-        description: mealData.description
-    };
+    const newMeal = await pool.query('INSERT INTO meals (name, description) VALUES ($1, $2) RETURNING *', [mealData.name, mealData.description]);
 
-    meals.push(newMeal); // Add the new meal to the in-memory array
-    return newMeal;
+    //meals.push(newMeal); // Add the new meal to the in-memory array
+    return newMeal.rows[0];
 }
 
-export function deleteMealRepository(mealId: number) {
-    const mealDeleted = meals.find(meal => meal.id === mealId);
-    meals = meals.filter(meal => meal.id !== mealId); // Remove the meal with the given ID from the array
-
-    return mealDeleted;
+export async function deleteMealRepository(mealId: number) {
+    const mealDeleted = await pool.query('DELETE FROM meals WHERE id = $1 RETURNING *', [mealId]);
+    return mealDeleted.rows[0];
 }
 
-export function updateMealRepository(mealId: number, mealData: { name?: string, description?: string }) {
-    const mealsUpdated = meals.map(meal => {
-        if (meal.id === mealId) {
-            return {
-                ...meal,
-                name: mealData.name || meal.name,
-                description: mealData.description || meal.description
-            };
-        }
-        return meal;
-    });
-    
-    meals = mealsUpdated;
-    return getMealById(mealId);
+export async function updateMealRepository(mealId: number, mealData: { name?: string, description?: string }) {
+    const mealsUpdated = await pool.query('UPDATE meals SET name = $1, description = $2 WHERE id = $3 RETURNING *', [mealData.name, mealData.description, mealId]);
+
+    return mealsUpdated.rows[0];
 }

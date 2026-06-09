@@ -1,4 +1,5 @@
 import app from './src/app.js';
+import './src/database/db.js';
 //import { createServer } from 'http';
 
 //const server = createServer(app);
