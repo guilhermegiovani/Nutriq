@@ -1,59 +1,54 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { createMealService, deleteMealService, getMealsByIdServices, getMealsServices, updateMealService } from '../services/meals.service.js';
 
-export async function createMealController(req: Request, res: Response) {
+export async function createMealController(req: Request, res: Response, next: NextFunction) {
     try{
         const newMeal = await createMealService(req.body);
 
         return res.status(201).json({"message": "Meal created successfully", "meal": newMeal});
 
     } catch (error) {
-        console.error('Error creating meal:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+        next(error);
     }
 }
 
-export async function getMealsController(req: Request, res: Response) {
+export async function getMealsController(req: Request, res: Response, next: NextFunction) {
     try {
         const meals = await getMealsServices();
 
         return res.json(meals);
     } catch (error) {
-        console.error('Error fetching meals:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+        next(error);
     }
 }
 
-export async function getMealsByIdController(req: Request, res: Response) {
+export async function getMealsByIdController(req: Request, res: Response, next: NextFunction) {
     try {
         const mealId = Number(req.params.id);
         const meal = await getMealsByIdServices(mealId);
 
         return res.json(meal);
     } catch (error) {
-        console.error('Error fetching meal:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+        next(error);
     }
 }
 
-export async function deleteMealController(req: Request, res: Response) {
+export async function deleteMealController(req: Request, res: Response, next: NextFunction) {
     try {
         // Here you would normally delete the meal from a database
         const deletedMeal = await deleteMealService(Number(req.params.id));
         return res.json({ message: 'Meal deleted successfully', meal: deletedMeal });
     } catch (error) {
-        console.error('Error deleting meal:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+        next(error);
     }
 }
 
-export async function updateMealController(req: Request, res: Response) {
+export async function updateMealController(req: Request, res: Response, next: NextFunction) {
     try {
         // Here you would normally update the meal in a database
         const updatedMeal = await updateMealService(Number(req.params.id), req.body);
         return res.json({ message: 'Meal updated successfully', meal: updatedMeal });
-    } catch (error) {
-        console.error('Error updating meal:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+    } catch (error: unknown) {
+        next(error);
     }
 }
