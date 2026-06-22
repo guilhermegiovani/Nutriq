@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', authMiddleware, getMealsController);
 router.get('/:id', getMealsByIdController);
-router.post('/', createMealController);
+router.post('/', authMiddleware, createMealController);
 router.delete('/:id', deleteMealController);
 router.patch('/:id', updateMealController);
 

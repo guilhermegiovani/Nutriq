@@ -3,7 +3,8 @@ import { createMealService, deleteMealService, getMealsByIdServices, getMealsSer
 
 export async function createMealController(req: Request, res: Response, next: NextFunction) {
     try{
-        const newMeal = await createMealService(req.body);
+        const newMeal = await createMealService(req.body, req.userId!); // Pass the user ID from the token to the service
+        console.log("User id from token:", req.userId); // Log the user ID from the token
 
         return res.status(201).json({"message": "Meal created successfully", "meal": newMeal});
 
@@ -14,7 +15,7 @@ export async function createMealController(req: Request, res: Response, next: Ne
 
 export async function getMealsController(req: Request, res: Response, next: NextFunction) {
     try {
-        const meals = await getMealsServices();
+        const meals = await getMealsServices(req.userId!); // Pass the user ID from the token to the service
 
         return res.json(meals);
     } catch (error) {

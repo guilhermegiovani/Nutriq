@@ -2,19 +2,19 @@ import { createMealRepository, deleteMealRepository, getMealByIdRepository, getR
 import type { CreateMealDTO, Meal } from "../types/meals.types.js";
 import { AppError } from "../errors/AppError.js";
 
-export async function createMealService(mealData: CreateMealDTO) {
+export async function createMealService(mealData: CreateMealDTO, userId: number): Promise<Meal> {
     // Here you would normally save the meal to a database and return the created meal
     if (!mealData.name || !mealData.description) {
         throw new AppError('Name and description are required to create a meal', 400);
     }
 
-    const newMeal = await createMealRepository(mealData);
+    const newMeal = await createMealRepository(mealData, userId);
 
     return newMeal;
 }
 
-export async function getMealsServices(): Promise<Meal[]> {
-    const meals = await getRepositoryMeals();
+export async function getMealsServices(userId: number): Promise<Meal[]> {
+    const meals = await getRepositoryMeals(userId);
 
     if (!meals || meals.length === 0) {
         throw new AppError('No meals found', 404);

@@ -1,8 +1,8 @@
 import { queryDB } from "../database/queryDB.js";
 import type { CreateMealDTO, Meal } from "../types/meals.types.js";
 
-export async function getRepositoryMeals(): Promise<Meal[]> {
-    const mealsDB = await queryDB('SELECT * FROM meals');
+export async function getRepositoryMeals(userId: number): Promise<Meal[]> {
+    const mealsDB = await queryDB('SELECT * FROM meals WHERE user_id = $1', [userId]);
 
     return mealsDB.rows;
 }
@@ -12,9 +12,9 @@ export async function getMealByIdRepository(mealId: number): Promise<Meal | unde
     return meal.rows[0];
 }
 
-export async function createMealRepository(mealData: CreateMealDTO): Promise<Meal> {
+export async function createMealRepository(mealData: CreateMealDTO, userId: number): Promise<Meal> {
     // Here you would normally save the meal to a database and return the created meal
-    const newMeal = await queryDB('INSERT INTO meals (name, description) VALUES ($1, $2) RETURNING *', [mealData.name, mealData.description]);
+    const newMeal = await queryDB('INSERT INTO meals (name, description, user_id) VALUES ($1, $2, $3) RETURNING *', [mealData.name, mealData.description, userId]);
 
     //meals.push(newMeal); // Add the new meal to the in-memory array
     return newMeal.rows[0];
