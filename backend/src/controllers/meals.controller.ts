@@ -26,18 +26,18 @@ export async function getMealsController(req: Request, res: Response, next: Next
 export async function getMealsByIdController(req: Request, res: Response, next: NextFunction) {
     try {
         const mealId = Number(req.params.id);
-        const meal = await getMealsByIdServices(mealId);
+        const meal = await getMealsByIdServices(mealId, req.userId!); // Pass the user ID from the token to the service  
 
         return res.json(meal);
     } catch (error) {
-        next(error);
+        next(error); 
     }
 }
 
 export async function deleteMealController(req: Request, res: Response, next: NextFunction) {
     try {
         // Here you would normally delete the meal from a database
-        const deletedMeal = await deleteMealService(Number(req.params.id));
+        const deletedMeal = await deleteMealService(Number(req.params.id), req.userId!); // Pass the user ID from the token to the service
         return res.json({ message: 'Meal deleted successfully', meal: deletedMeal });
     } catch (error) {
         next(error);
@@ -47,7 +47,7 @@ export async function deleteMealController(req: Request, res: Response, next: Ne
 export async function updateMealController(req: Request, res: Response, next: NextFunction) {
     try {
         // Here you would normally update the meal in a database
-        const updatedMeal = await updateMealService(Number(req.params.id), req.body);
+        const updatedMeal = await updateMealService(Number(req.params.id), req.userId!, req.body);
         return res.json({ message: 'Meal updated successfully', meal: updatedMeal });
     } catch (error: unknown) {
         next(error);

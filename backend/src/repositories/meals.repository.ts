@@ -7,8 +7,8 @@ export async function getRepositoryMeals(userId: number): Promise<Meal[]> {
     return mealsDB.rows;
 }
 
-export async function getMealByIdRepository(mealId: number): Promise<Meal | undefined> {
-    const meal = await queryDB('SELECT * FROM meals WHERE id = $1', [mealId]);
+export async function getMealByIdRepository(mealId: number, userId: number): Promise<Meal | undefined> {
+    const meal = await queryDB('SELECT * FROM meals WHERE id = $1 AND user_id = $2', [mealId, userId]);
     return meal.rows[0];
 }
 
@@ -20,14 +20,14 @@ export async function createMealRepository(mealData: CreateMealDTO, userId: numb
     return newMeal.rows[0];
 }
 
-export async function deleteMealRepository(mealId: number): Promise<Meal | undefined> {
-    const mealDeleted = await queryDB('DELETE FROM meals WHERE id = $1 RETURNING *', [mealId]);
+export async function deleteMealRepository(mealId: number, userId: number): Promise<Meal | undefined> {
+    const mealDeleted = await queryDB('DELETE FROM meals WHERE id = $1 AND user_id = $2 RETURNING *', [mealId, userId]);
     return mealDeleted.rows[0];
 }
 
-export async function updateMealRepository(mealId: number, mealData: Partial<CreateMealDTO>): Promise<Meal | undefined> {
-    const fieldsToUpdate = [];
-    const values = [];
+export async function updateMealRepository(mealId: number, userId: number, mealData: Partial<CreateMealDTO>): Promise<Meal | undefined> {
+    const fieldsToUpdate:string[] = [];
+    const values:(string | number)[] = [];
 
     for (const [key, value] of Object.entries(mealData)) {
 
@@ -36,11 +36,12 @@ export async function updateMealRepository(mealId: number, mealData: Partial<Cre
     }
 
     values.push(mealId); // Add mealId as the last parameter for the WHERE clause
+    values.push(userId); // Add userId as the last parameter for the WHERE clause
 
     console.log(fieldsToUpdate);
     console.log(values);
 
-    const mealsUpdated = await queryDB(`UPDATE meals SET ${fieldsToUpdate.join(', ')} WHERE id = $${values.length} RETURNING *`, values);
+    const mealsUpdated = await queryDB(`UPDATE meals SET ${fieldsToUpdate.join(', ')} WHERE id = $${values.length - 1} AND user_id = $${values.length} RETURNING *`, values);
 
     return mealsUpdated.rows[0];
 }

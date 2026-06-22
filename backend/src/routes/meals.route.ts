@@ -5,9 +5,9 @@ import { authMiddleware } from '../middlewares/auth.middleware.js';
 const router = express.Router();
 
 router.get('/', authMiddleware, getMealsController);
-router.get('/:id', getMealsByIdController);
+router.get('/:id', authMiddleware, getMealsByIdController);
 router.post('/', authMiddleware, createMealController);
-router.delete('/:id', deleteMealController);
-router.patch('/:id', updateMealController);
+router.delete('/:id', authMiddleware, deleteMealController);
+router.patch('/:id', authMiddleware, updateMealController);
 
 export default router;

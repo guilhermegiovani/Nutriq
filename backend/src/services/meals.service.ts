@@ -23,8 +23,8 @@ export async function getMealsServices(userId: number): Promise<Meal[]> {
     return meals;
 }
 
-export async function getMealsByIdServices(mealId: number): Promise<Meal> {
-    const meal = await getMealByIdRepository(mealId);
+export async function getMealsByIdServices(mealId: number, userId: number): Promise<Meal> {
+    const meal = await getMealByIdRepository(mealId, userId);
     if (!meal) {
         throw new AppError(`Meal with ID ${mealId} not found`, 404);
     }
@@ -32,21 +32,21 @@ export async function getMealsByIdServices(mealId: number): Promise<Meal> {
     return meal;
 }
 
-export async function deleteMealService(mealId: number) {
+export async function deleteMealService(mealId: number, userId: number) {
     // Here you would normally delete the meal from a database
-    const mealExists = await getMealByIdRepository(mealId);
+    const mealExists = await getMealByIdRepository(mealId, userId);
     if (!mealExists) {
         throw new AppError(`Meal with ID ${mealId} not found`, 404);
     }
 
-    const deletedMeal = await deleteMealRepository(mealId);
+    const deletedMeal = await deleteMealRepository(mealId, userId);
     console.log(`Meal with ID ${mealId} deleted (not really, this is just a placeholder)`);
     return deletedMeal;
 }
 
-export async function updateMealService(mealId: number, mealData: { name?: string, description?: string }) {
+export async function updateMealService(mealId: number, userId: number, mealData: { name?: string, description?: string }) {
     // Here you would normally update the meal in a database
-    const mealExists = await getMealByIdRepository(mealId);
+    const mealExists = await getMealByIdRepository(mealId, userId);
     if (!mealExists) {
         throw new AppError(`Meal with ID ${mealId} not found`, 404);
     }
@@ -56,7 +56,7 @@ export async function updateMealService(mealId: number, mealData: { name?: strin
     }
 
     // Here you would normally update the meal in a database
-    const updatedMeal = await updateMealRepository(mealId, mealData);
+    const updatedMeal = await updateMealRepository(mealId, userId, mealData);
     console.log(`Meal with ID ${mealId} updated (not really, this is just a placeholder)`);
 
     // For demonstration purposes, we'll just return the updated meal
