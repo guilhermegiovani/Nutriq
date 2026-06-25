@@ -14,5 +14,6 @@ router.use('/meals', mealsRouter);
 router.use('/users', usersRouter);
 router.use('/auth', authRouter);
 router.use('/foods', foodsRouter);
+router.use('/foods', foodsRouter);
 
 export default router;

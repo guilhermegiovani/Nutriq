@@ -1,11 +1,16 @@
 import { createMealRepository, deleteMealRepository, getMealByIdRepository, getRepositoryMeals, updateMealRepository } from "../repositories/meals.repository.js";
-import type { CreateMealDTO, Meal } from "../types/meals.types.js";
+import type { CreateMealDTO, Meal, MealType } from "../types/meals.types.js";
+import { VALID_MEAL_TYPES } from "../types/meals.types.js";
 import { AppError } from "../errors/AppError.js";
 
 export async function createMealService(mealData: CreateMealDTO, userId: number): Promise<Meal> {
     // Here you would normally save the meal to a database and return the created meal
-    if (!mealData.name || !mealData.description) {
-        throw new AppError('Name and description are required to create a meal', 400);
+    if (!mealData.name || !mealData.description || !mealData.type) {
+        throw new AppError('Name, description and type are required to create a meal', 400);
+    }
+
+    if (!VALID_MEAL_TYPES.includes(mealData.type)) {
+        throw new AppError('Invalid meal type', 400);
     }
 
     const newMeal = await createMealRepository(mealData, userId);
@@ -44,7 +49,7 @@ export async function deleteMealService(mealId: number, userId: number) {
     return deletedMeal;
 }
 
-export async function updateMealService(mealId: number, userId: number, mealData: { name?: string, description?: string }) {
+export async function updateMealService(mealId: number, userId: number, mealData: { name?: string, description?: string, type?: MealType }) {
     // Here you would normally update the meal in a database
     const mealExists = await getMealByIdRepository(mealId, userId);
     if (!mealExists) {

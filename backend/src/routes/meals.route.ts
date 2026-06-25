@@ -10,4 +10,10 @@ router.post('/', authMiddleware, createMealController);
 router.delete('/:id', authMiddleware, deleteMealController);
 router.patch('/:id', authMiddleware, updateMealController);
 
+// Meals foods
+router.post('/:mealId/foods',);
+router.get('/:mealId/foods', );
+router.delete('/:mealId/foods/:mealFoodId', );
+router.patch('/:mealId/foods/:mealFoodId',);
+
 export default router;
