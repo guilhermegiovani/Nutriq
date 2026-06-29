@@ -1,9 +1,11 @@
+import type { MealFoodWithFood } from "./meal-foods.type.js";
 
 export type Meal = {
     id: number;
     name: string;
     description: string;
     type: MealType;
+    foods: MealFoodWithFood[];
     meal_date: Date;
 }
 

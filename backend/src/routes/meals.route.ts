@@ -1,7 +1,7 @@
 import express from 'express';
 import { getMealsController, createMealController, deleteMealController, updateMealController, getMealsByIdController } from '../controllers/meals.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
-import { createMealFoodController, deleteMealFoodController, getMealFoodsController } from '../controllers/meals_foods.controller.js';
+import { createMealFoodController, deleteMealFoodController, getMealFoodsController, updateMealFoodController } from '../controllers/meals_foods.controller.js';
 
 const router = express.Router();
 
@@ -15,6 +15,6 @@ router.patch('/:id', authMiddleware, updateMealController);
 router.post('/:mealId/foods', authMiddleware, createMealFoodController);
 router.get('/:mealId/foods', authMiddleware, getMealFoodsController);
 router.delete('/:mealId/foods/:mealFoodId', authMiddleware, deleteMealFoodController );
-router.patch('/:mealId/foods/:mealFoodId',);
+router.patch('/:mealId/foods/:mealFoodId', authMiddleware, updateMealFoodController);
 
 export default router;

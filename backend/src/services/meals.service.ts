@@ -2,6 +2,7 @@ import { createMealRepository, deleteMealRepository, getMealByIdRepository, getR
 import type { CreateMealDTO, Meal, MealType } from "../types/meals.types.js";
 import { VALID_MEAL_TYPES } from "../types/meals.types.js";
 import { AppError } from "../errors/AppError.js";
+import { getMealFoodsRepository } from "../repositories/meals_foods.repository.js";
 
 export async function createMealService(mealData: CreateMealDTO, userId: number): Promise<Meal> {
     // Here you would normally save the meal to a database and return the created meal
@@ -34,7 +35,12 @@ export async function getMealsByIdServices(mealId: number, userId: number): Prom
         throw new AppError(`Meal with ID ${mealId} not found`, 404);
     }
 
-    return meal;
+    const foods = await getMealFoodsRepository(mealId);
+
+    return {
+        ...meal,
+        foods
+    };
 }
 
 export async function deleteMealService(mealId: number, userId: number) {

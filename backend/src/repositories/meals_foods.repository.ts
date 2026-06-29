@@ -1,5 +1,5 @@
 import { queryDB } from "../database/queryDB.js";
-import type { CreateMealFoodDTO, MealFood } from "../types/meal-foods.type.js";
+import type { CreateMealFoodDTO, MealFood, MealFoodWithFood, UpdateMealFoodDTO } from "../types/meal-foods.type.js";
 
 
 export async function createMealFoodRepository(MealFood: CreateMealFoodDTO, mealId: number): Promise<MealFood> {
@@ -9,8 +9,8 @@ export async function createMealFoodRepository(MealFood: CreateMealFoodDTO, meal
 
 }
 
-export async function getMealFoodsRepository(mealId: number): Promise<MealFood[]> {
-    const mealFoods = await queryDB("SELECT * FROM meal_foods WHERE meal_id = $1", [mealId])
+export async function getMealFoodsRepository(mealId: number): Promise<MealFoodWithFood[]> {
+    const mealFoods = await queryDB("SELECT mf.id AS meal_food_id, mf.meal_id, mf.quantity_g, f.* FROM meal_foods mf INNER JOIN foods f ON mf.food_id = f.id WHERE mf.meal_id = $1;", [mealId])
 
     return mealFoods.rows
 }
@@ -25,4 +25,25 @@ export async function deleteMealFoodRepository(mealId: number, mealFoodId: numbe
     const deletedMealFood = await queryDB("DELETE FROM meal_foods WHERE id = $1 AND meal_id = $2 RETURNING *", [mealFoodId, mealId])
 
     return deletedMealFood.rows[0]
+}
+
+export async function updateMealFoodRepository(mealId: number, mealFoodId: number, updateData: UpdateMealFoodDTO): Promise<MealFood> {
+    const fieldsToUpdate:string[] = [];
+    const values:(string | number)[] = [];
+
+    for (const [key, value] of Object.entries(updateData)) {
+
+        fieldsToUpdate.push(`${key} = $${values.length + 1}`)
+        values.push(value)
+    }
+
+    values.push(mealFoodId); // Add mealFoodId as the last parameter for the WHERE clause
+    values.push(mealId); // Add mealId as the last parameter for the WHERE clause
+
+    console.log(fieldsToUpdate);
+    console.log(values);
+
+    const updatedMealFood  = await queryDB(`UPDATE meal_foods SET ${fieldsToUpdate.join(', ')} WHERE id = $${values.length - 1} AND meal_id = $${values.length} RETURNING *`, values);
+
+    return updatedMealFood .rows[0];
 }
