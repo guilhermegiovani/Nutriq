@@ -5,7 +5,7 @@ import type { Meal } from '@/types/meal';
  * Parâmetros de cada tela da pilha principal.
  * `undefined` = tela sem parâmetros na rota.
  */
-export type RootStackParamList = {
+export type AppStackParamList = {
   [ROUTES.HOME]: undefined;
   [ROUTES.MEALS]: undefined;
   [ROUTES.PROFILE]: undefined;
@@ -13,3 +13,17 @@ export type RootStackParamList = {
   [ROUTES.ADD_NEW_MEALS]: undefined;
   [ROUTES.UPDATE_MEALS]: { meal: Meal };
 };
+
+export type AuthStackParamList = {
+  [ROUTES.LOGIN]: undefined;
+  [ROUTES.REGISTER]: undefined;
+}
+
+// export type RootStackParamList = {
+//   [ROUTES.HOME]: undefined;
+//   [ROUTES.MEALS]: undefined;
+//   [ROUTES.PROFILE]: undefined;
+//   [ROUTES.HISTORICAL]: undefined;
+//   [ROUTES.ADD_NEW_MEALS]: undefined;
+//   [ROUTES.UPDATE_MEALS]: { meal: Meal };
+// };
