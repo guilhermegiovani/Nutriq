@@ -14,7 +14,7 @@ export async function getMealByIdRepository(mealId: number, userId: number): Pro
 
 export async function createMealRepository(mealData: CreateMealDTO, userId: number): Promise<Meal> {
     // Here you would normally save the meal to a database and return the created meal
-    const newMeal = await queryDB('INSERT INTO meals (name, description, type, user_id) VALUES ($1, $2, $3, $4) RETURNING *', [mealData.name, mealData.description, mealData.type, userId]);
+    const newMeal = await queryDB('INSERT INTO meals (type, user_id) VALUES ($1, $2) RETURNING *', [mealData.type, userId]);
 
     //meals.push(newMeal); // Add the new meal to the in-memory array
     return newMeal.rows[0];
@@ -22,6 +22,7 @@ export async function createMealRepository(mealData: CreateMealDTO, userId: numb
 
 export async function deleteMealRepository(mealId: number, userId: number): Promise<Meal | undefined> {
     const mealDeleted = await queryDB('DELETE FROM meals WHERE id = $1 AND user_id = $2 RETURNING *', [mealId, userId]);
+    
     return mealDeleted.rows[0];
 }
 
@@ -37,9 +38,6 @@ export async function updateMealRepository(mealId: number, userId: number, mealD
 
     values.push(mealId); // Add mealId as the last parameter for the WHERE clause
     values.push(userId); // Add userId as the last parameter for the WHERE clause
-
-    console.log(fieldsToUpdate);
-    console.log(values);
 
     const mealsUpdated = await queryDB(`UPDATE meals SET ${fieldsToUpdate.join(', ')} WHERE id = $${values.length - 1} AND user_id = $${values.length} RETURNING *`, values);
 

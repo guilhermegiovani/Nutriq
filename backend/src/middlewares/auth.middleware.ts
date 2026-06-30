@@ -27,7 +27,6 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
         };
         
         req.userId = payload.userId; // Assuming the token contains a user ID
-        console.log('Token verified:', verifiedToken);
     } catch (error) {
         return res.status(401).json({ message: 'Token validation failed' });
     }

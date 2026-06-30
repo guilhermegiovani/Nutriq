@@ -6,8 +6,8 @@ import { getMealFoodsRepository } from "../repositories/meals_foods.repository.j
 
 export async function createMealService(mealData: CreateMealDTO, userId: number): Promise<Meal> {
     // Here you would normally save the meal to a database and return the created meal
-    if (!mealData.name || !mealData.description || !mealData.type) {
-        throw new AppError('Name, description and type are required to create a meal', 400);
+    if (!mealData.type) {
+        throw new AppError('type are required to create a meal', 400);
     }
 
     if (!VALID_MEAL_TYPES.includes(mealData.type)) {
@@ -51,7 +51,6 @@ export async function deleteMealService(mealId: number, userId: number) {
     }
 
     const deletedMeal = await deleteMealRepository(mealId, userId);
-    console.log(`Meal with ID ${mealId} deleted (not really, this is just a placeholder)`);
     return deletedMeal;
 }
 
@@ -68,7 +67,6 @@ export async function updateMealService(mealId: number, userId: number, mealData
 
     // Here you would normally update the meal in a database
     const updatedMeal = await updateMealRepository(mealId, userId, mealData);
-    console.log(`Meal with ID ${mealId} updated (not really, this is just a placeholder)`);
 
     // For demonstration purposes, we'll just return the updated meal
     return updatedMeal;

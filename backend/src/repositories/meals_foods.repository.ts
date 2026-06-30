@@ -40,9 +40,6 @@ export async function updateMealFoodRepository(mealId: number, mealFoodId: numbe
     values.push(mealFoodId); // Add mealFoodId as the last parameter for the WHERE clause
     values.push(mealId); // Add mealId as the last parameter for the WHERE clause
 
-    console.log(fieldsToUpdate);
-    console.log(values);
-
     const updatedMealFood  = await queryDB(`UPDATE meal_foods SET ${fieldsToUpdate.join(', ')} WHERE id = $${values.length - 1} AND meal_id = $${values.length} RETURNING *`, values);
 
     return updatedMealFood .rows[0];
