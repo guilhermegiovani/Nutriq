@@ -3,10 +3,10 @@ import { Pressable, Text, View } from 'react-native';
 
 import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import { ROUTES } from '@/constants/routes';
-import type { RootStackParamList } from '@/navigation/types';
+import type { AppStackParamList } from '@/navigation/types';
 
 /** Props injetadas pelo React Navigation nesta tela */
-type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.HOME>;
+type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.HOME>;
 
 /**
  * Tela inicial — resumo do dia (calorias, meta, atalhos).

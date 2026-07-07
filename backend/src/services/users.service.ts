@@ -4,10 +4,14 @@ import { createUserRepository, findUserByEmailRepository, getUserByIdRepository,
 import type { CreateUserDTO, User } from "../types/users.type.js";
 
 export async function createUserService(userData: CreateUserDTO) {
-    const { name, email, password } = userData;
+    const { name, email, password, confirmPassword } = userData;
 
     if (!name || !email || !password) {
         throw new AppError("Name, email, and password are required", 400);
+    }
+
+    if (password !== confirmPassword) {
+        throw new AppError("Passwords do not match", 400);
     }
 
     const existingUser = await findUserByEmailRepository(email);
@@ -29,7 +33,12 @@ export async function createUserService(userData: CreateUserDTO) {
         throw new AppError("Failed to create user", 500);
     }
 
-    return newUser;
+    return {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        created_at: newUser.created_at,
+    }
 }
 
 export async function getUsersService(): Promise<User[]> {

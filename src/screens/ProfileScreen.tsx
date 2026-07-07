@@ -4,14 +4,14 @@ import { Pressable, Text, View } from 'react-native';
 import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import { ROUTES } from '@/constants/routes';
 import { env } from '@/config/env';
-import type { RootStackParamList } from '@/navigation/types';
+import type { AppStackParamList } from '@/navigation/types';
 import { useMeals } from '@/context/MealsContext';
 import { Input } from '@/components/ui/Input';
 import { InfoCard } from '@/components/ui/InfoCard';
 import { useState } from 'react';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 
-type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.PROFILE>;
+type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.PROFILE>;
 
 /**
  * Perfil do usuário, metas calóricas e configurações.

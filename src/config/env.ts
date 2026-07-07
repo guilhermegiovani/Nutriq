@@ -5,5 +5,5 @@
 export const env = {
   /** URL base da API (ex.: http://localhost:3000/api) */
   apiUrl:
-    process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000/api',
+    process.env.EXPO_PUBLIC_API_URL  ?? 'http://localhost:3000/api', //  ?? 'http://localhost:3000/api'
 } as const;

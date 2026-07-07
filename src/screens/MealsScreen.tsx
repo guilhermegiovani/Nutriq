@@ -9,9 +9,9 @@ import { MealList } from '@/components/meals/MealList';
 import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import { ROUTES } from '@/constants/routes';
 import { useMeals } from '@/context/MealsContext';
-import type { RootStackParamList } from '@/navigation/types';
+import type { AppStackParamList } from '@/navigation/types';
 
-type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.MEALS>;
+type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.MEALS>;
 
 export function MealsScreen({ navigation }: Props) {
   const { meals } = useMeals();
