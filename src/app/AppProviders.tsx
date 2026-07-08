@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 
 import { MealsProvider } from '@/context/MealsContext';
+import { AuthProvider } from '@/context/AuthContext';
 
 type AppProvidersProps = {
   /** Árvore de componentes do app (navegação, telas, etc.) */
@@ -29,7 +30,9 @@ const queryClient = new QueryClient({
 export function AppProviders({ children }: AppProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <MealsProvider>{children}</MealsProvider>
+      <AuthProvider>
+        <MealsProvider>{children}</MealsProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

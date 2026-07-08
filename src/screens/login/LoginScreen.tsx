@@ -2,6 +2,7 @@ import { Form } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { ROUTES } from "@/constants/routes";
+import { useAuth } from "@/context/AuthContext";
 import { AuthStackParamList, AppStackParamList } from "@/navigation/types";
 import { login } from "@/services/api/auth";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -13,10 +14,11 @@ type Props = NativeStackScreenProps<AuthStackParamList, typeof ROUTES.LOGIN>;
 export function LoginScreen({ navigation }: Props) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const { signIn } = useAuth()
 
     async function handleLogin() {
         try {
-            const response = await login({
+            const response = await signIn({
                 email,
                 password,
             });

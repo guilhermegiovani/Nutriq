@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export type LoginDTO = {
   email: string;
   password: string;
@@ -5,12 +7,7 @@ export type LoginDTO = {
 
 export type LoginResponse = {
   token: string;
-  user: {
-    id: number;
-    name: string;
-    email: string;
-    created_at: string;
-  };
+  user: User;
 }
 
 export type RegisterDTO = {

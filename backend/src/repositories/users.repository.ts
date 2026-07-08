@@ -10,7 +10,7 @@ export async function createUserRepository(userData: CreateUserDTO): Promise<Use
 }
 
 export async function getUserByIdRepository(userId: number): Promise<User | undefined> {
-    const user = await queryDB('SELECT * FROM users WHERE id = $1', [userId]);
+    const user = await queryDB('SELECT id, name, email, created_at FROM users WHERE id = $1', [userId]);
     return user.rows[0];
 }
 

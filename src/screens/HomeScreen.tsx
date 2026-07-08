@@ -4,6 +4,7 @@ import { Pressable, Text, View } from 'react-native';
 import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import { ROUTES } from '@/constants/routes';
 import type { AppStackParamList } from '@/navigation/types';
+import { useAuth } from '@/context/AuthContext';
 
 /** Props injetadas pelo React Navigation nesta tela */
 type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.HOME>;
@@ -13,6 +14,8 @@ type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.HOME>;
  * Dados virão da API quando o backend estiver pronto.
  */
 export function HomeScreen({ navigation }: Props) {
+  const { signOut } = useAuth()
+
   return (
     <ScreenContainer>
       <Text className="text-2xl font-bold text-text">Nutriq</Text>
@@ -46,6 +49,13 @@ export function HomeScreen({ navigation }: Props) {
           <Text className="text-center font-semibold text-secondary">
             Histórico de refeições
           </Text>
+        </Pressable>
+
+        <Pressable
+          className="rounded-xl border border-secondary px-4 py-3 active:opacity-80"
+          onPress={signOut}
+        >
+          <Text className="text-center font-semibold text-secondary">Sair</Text>
         </Pressable>
       </View>
     </ScreenContainer>
