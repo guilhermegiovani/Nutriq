@@ -50,13 +50,6 @@ export function HomeScreen({ navigation }: Props) {
             Histórico de refeições
           </Text>
         </Pressable>
-
-        <Pressable
-          className="rounded-xl border border-secondary px-4 py-3 active:opacity-80"
-          onPress={signOut}
-        >
-          <Text className="text-center font-semibold text-secondary">Sair</Text>
-        </Pressable>
       </View>
     </ScreenContainer>
   );

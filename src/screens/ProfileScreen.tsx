@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/Input';
 import { InfoCard } from '@/components/ui/InfoCard';
 import { useState } from 'react';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { useAuth } from '@/context/AuthContext';
 
 type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.PROFILE>;
 
@@ -29,6 +30,8 @@ export function ProfileScreen(_props: Props) {
     : 0;
 
   const progressWidth = Math.min(progressPercentage, 100);
+
+  const { signOut } = useAuth()
 
   return (
     <ScreenContainer>
@@ -89,6 +92,13 @@ export function ProfileScreen(_props: Props) {
           
           <ProgressBar percentage={progressWidth} />
         </InfoCard>
+
+        <Pressable
+          className="rounded-xl border border-secondary px-4 py-3 mt-6 active:opacity-80"
+          onPress={signOut}
+        >
+          <Text className="text-center font-semibold text-secondary">Sair</Text>
+        </Pressable>
 
       </View>
     </ScreenContainer>
