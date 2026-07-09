@@ -13,7 +13,7 @@ export type FoodItem = {
   /** Nome exibido (ex.: "Arroz integral") */
   name: string;
   /** Quantidade consumida em gramas */
-  amountGrams: number;
+  quantity_g: number;
   /** Calorias por porção informada */
   calories: number;
   /** Proteínas em gramas */
@@ -30,7 +30,7 @@ export type Meal = {
   /** Tipo: café, almoço, etc. */
   type: MealType;
   /** Data ISO (YYYY-MM-DD) */
-  date: string;
+  meal_date: string;
   /** Itens consumidos nesta refeição */
   items: FoodItem[];
   /** Soma das calorias dos itens */

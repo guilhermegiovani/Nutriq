@@ -6,7 +6,11 @@ export const endpoints = {
   /** GET — verifica se a API está no ar */
   health: '/health',
   /** CRUD de refeições */
-  meals: '/meals',
+  meals: {
+    list: '/meals',
+    create: '/meals',
+    byId: (id: number) => `/meals/${id}`,
+  },
   /** Resumo calórico do dia (futuro) */
   diary: '/diary',
   /** Autenticação (futuro) */

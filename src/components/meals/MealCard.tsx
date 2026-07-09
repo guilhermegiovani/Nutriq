@@ -1,5 +1,5 @@
 import type { NativeStackNavigationProp  } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '@/navigation/types';
+import type { AppStackParamList } from '@/navigation/types';
 import { Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Trash2, Pencil } from 'lucide-react-native'
@@ -9,13 +9,13 @@ import type { Meal } from '@/types/meal';
 import { useMeals } from '@/context/MealsContext';
 import { ROUTES } from '@/constants/routes';
 
-//type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.MEALS>;
+//type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.MEALS>;
 type MealCardProps = {
   meal: Meal;
   //navigation: Props;
 };
 
-type NavigationProps = NativeStackNavigationProp<RootStackParamList, typeof ROUTES.MEALS>; // NativeStackNavigationProp
+type NavigationProps = NativeStackNavigationProp<AppStackParamList, typeof ROUTES.MEALS>; // NativeStackNavigationProp
 
 /** Card de uma refeição salva na lista */
 export function MealCard({ meal }: MealCardProps) {
@@ -34,7 +34,7 @@ export function MealCard({ meal }: MealCardProps) {
           <View key={item.id} className="mt-2">
             <Text className="mt-1 text-base font-semibold text-text">{item.name}</Text>
             <Text className="mt-1 text-sm text-muted">
-              {item.amountGrams} g · {item.calories} kcal
+              {item.quantity_g} g · {item.calories} kcal
             </Text>
 
           </View>

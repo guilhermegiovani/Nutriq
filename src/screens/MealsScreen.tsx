@@ -10,22 +10,40 @@ import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import { ROUTES } from '@/constants/routes';
 import { useMeals } from '@/context/MealsContext';
 import type { AppStackParamList } from '@/navigation/types';
+import { getMeals } from '@/services/api/meals';
+import { useEffect, useState } from 'react';
+import { Meal } from '@/types/meal';
 
 type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.MEALS>;
 
 export function MealsScreen({ navigation }: Props) {
-  const { meals } = useMeals();
-  console.log("Meals Screen", meals)
+  //const { meals } = useMeals();
+  const [mealsApi, setMealsApi] = useState<Meal[]>([])
   const today = new Date().toISOString().slice(0, 10);
-  const mealsToday = meals.filter((meal) => meal.date === today)
+  const mealsToday = mealsApi.filter((meal) => meal.meal_date.slice(0, 10) === today)
 
   const totalDay = mealsToday?.reduce((sum, meal) => sum + meal.totalCalories, 0);
+
+
+  useEffect(() => {
+    loadMeals()
+  }, [])
+
+  const loadMeals = async () => {
+    try {
+      const meals = await getMeals();
+      setMealsApi(meals)
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <ScreenContainer scrollable>
       <Text className="text-xl font-bold text-text">Refeições</Text>
       <Text className="mt-2 text-muted">
-        Total do dia: {totalDay} kcal · {meals.length} registro(s)
+        Total do dia: {totalDay} kcal · {mealsApi.length} registro(s)
       </Text>
 
       <View className="mt-6 gap-3">
@@ -38,7 +56,7 @@ export function MealsScreen({ navigation }: Props) {
           </Text>
         </Pressable>
 
-        <MealList meals={meals} />
+        <MealList meals={mealsApi} />
       </View>
     </ScreenContainer>
   );
