@@ -3,13 +3,15 @@
  * Espelham o que o PostgreSQL + API Node.js exporão depois.
  */
 
+import { CreateMealItem } from "./food";
+
 /** Momento do dia em que a refeição foi registrada */
 export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 
 /** Um alimento dentro de uma refeição */
 export type FoodItem = {
   /** Identificador único no banco */
-  id: string;
+  id: number;
   /** Nome exibido (ex.: "Arroz integral") */
   name: string;
   /** Quantidade consumida em gramas */
@@ -24,6 +26,11 @@ export type FoodItem = {
   fat: number;
 };
 
+export type MealItem = FoodItem & {
+  meal_food_id: number;
+  meal_id: number;
+};
+
 /** Refeição completa do usuário */
 export type Meal = {
   id: string;
@@ -32,7 +39,13 @@ export type Meal = {
   /** Data ISO (YYYY-MM-DD) */
   meal_date: string;
   /** Itens consumidos nesta refeição */
-  items: FoodItem[];
+  items: MealItem[];
   /** Soma das calorias dos itens */
   totalCalories: number;
+};
+
+export type CreateMealRequest = {
+  type: MealType;
+  meal_date: string;
+  items: CreateMealItem[];
 };

@@ -2,7 +2,7 @@
  * Formulário de criação e edição de refeições.
  * Permite adicionar alimentos, escolher unidade e salvar total calórico.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -11,13 +11,17 @@ import { Input } from '@/components/ui/Input';
 import { OptionButton } from '@/components/ui/OptionButton';
 import { useMeals } from '@/context/MealsContext';
 import { foods } from '@/data/foods';
-import type { FoodItem, Meal, MealType } from '@/types/meal';
+import type { CreateMealRequest, FoodItem, Meal, MealItem, MealType } from '@/types/meal';
 import {
   calculateFromFood,
   findFoodByName,
   toGrams,
 } from '@/utils/nutrition';
 import { AddMealItemsList } from './AddMealItemsList';
+import { createMeal } from '@/services/api/meals';
+import { Food } from '@/types/food';
+import { getFoods } from '@/services/api/foods';
+import { clsx } from 'clsx';
 
 // type MealFormData = {
 
@@ -38,20 +42,35 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
   const [unit, setUnit] = useState<'g' | 'kg'>('g');
   const [mealType, setMealType] = useState<MealType>(initialData?.type || 'breakfast');
   const [error, setError] = useState('');
+  const [foods, setFoods] = useState<Food[]>([]);
+  const [selectedFood, setSelectedFood] = useState<Food | null>(null);
 
-  const food = useMemo(() => findFoodByName(name), [name]);
+  const filteredFoods = useMemo(() => findFoodByName(name, foods), [name, foods]);
   const amount = Number(amountText.replace(',', '.'));
 
   const [mealItems, setMealItems] = useState<FoodItem[]>(initialData?.items || []);
 
   // Prévia de calorias enquanto o usuário preenche
   const preview = useMemo(() => {
-    if (!food || !amount || amount <= 0) return null;
+    if (!selectedFood || !amount || amount <= 0) return null;
     const grams = toGrams(amount, unit);
-    return calculateFromFood(food, grams);
-  }, [food, amount, unit]);
+    return calculateFromFood(selectedFood, grams);
+  }, [selectedFood, amount, unit]);
 
-  function handleSave() {
+  useEffect(() => {
+    loadFoods();
+  }, []);
+
+  async function loadFoods() {
+    try {
+      const foodsData = await getFoods();
+      setFoods(foodsData);
+    } catch (error) {
+      console.error('Error loading foods:', error);
+    }
+  }
+
+  async function handleSave() {
 
     if (mealItems.length === 0) {
       setError('Adicione pelo menos um alimento.');
@@ -63,29 +82,42 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
       0
     );
 
-    const meal: Meal = {
-      id: isEditing
-        ? initialData!.id
-        : String(Date.now()),
-      type: mealType,
-      date: isEditing
-        ? initialData!.date
-        : new Date().toISOString().slice(0, 10),
-      items: mealItems,
-      totalCalories,
-    };
+    // const meal: CreateMeal = {
+    //   id: isEditing
+    //     ? initialData!.id
+    //     : String(Date.now()),
+    //   type: mealType,
+    //   meal_date: isEditing
+    //     ? initialData!.meal_date
+    //     : new Date().toISOString().slice(0, 10),
+    //   items: mealItems.map(item => ({
+    //     food_id: item.id,
+    //     quantity_g: item.quantity_g,
+    //   })),
+    //   totalCalories,
+    // };
 
     if (isEditing) {
-      updateMeal(meal)
+      //updateMeal(meal)
+      console.log("Em breve: Implementar atualização de refeição no backend.");
     } else {
-      addMeal(meal);
+      const mealRequest: CreateMealRequest = {
+        type: mealType,
+        meal_date: new Date().toISOString().slice(0, 10),
+        items: mealItems.map(item => ({
+          food_id: Number(item.id),
+          quantity_g: item.quantity_g,
+        })),
+      };
+
+      await createMeal(mealRequest)
     }
 
     navigation.goBack();
   }
 
   function addItem() {
-    if (!food) return;
+    if (!selectedFood) return;
     if (!amount || amount <= 0) return;
 
     if (!amount || amount <= 0) {
@@ -94,12 +126,12 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
     }
 
     const grams = toGrams(amount, unit);
-    const nutrition = calculateFromFood(food, grams);
+    const nutrition = calculateFromFood(selectedFood, grams);
 
     const item = {
-      id: `${food.id}-${Date.now()}`,
-      name: food.name,
-      amountGrams: grams,
+      id: selectedFood.id,
+      name: selectedFood.name,
+      quantity_g: grams,
       calories: nutrition.calories,
       protein: nutrition.protein,
       carbs: nutrition.carbs,
@@ -111,18 +143,18 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
     setMealItems((prev) => [...prev, item])
   }
 
-  function removeItem(id: string) {
+  function removeItem(id: number) {
     setMealItems((prev) =>
       prev.filter((item) => item.id !== id)
     );
   }
 
-  function editItem(id: string) {
+  function editItem(id: number) {
     const itemToEdit = mealItems.find((item) => item.id === id);
     if (!itemToEdit) return;
 
     setName(itemToEdit.name);
-    setAmountText(String(itemToEdit.amountGrams));
+    setAmountText(String(itemToEdit.quantity_g));
     setUnit('g');
     setMealType(mealType);
     removeItem(id);
@@ -134,10 +166,35 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
         placeholder="Nome do alimento (ex.: Arroz)"
         value={name}
         onChange={(text) => {
+          if (selectedFood?.name !== text) {
+            setSelectedFood(null);
+          }
           setName(text);
           setError('');
         }}
       />
+
+      {filteredFoods.length > 0 && !selectedFood && (
+        <View className="mt-1 overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm">
+          {filteredFoods.map((food, index) => (
+            <Pressable
+              key={food.id}
+              onPress={() => {
+                setSelectedFood(food);
+                setName(food.name);
+              }}
+              className={clsx(
+                "px-4 py-3 active:bg-slate-100",
+                index !== filteredFoods.length - 1 && "border-b border-slate-200"
+              )}
+            >
+              <Text className="text-base text-text">
+                {food.name}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
 
       <Input
         placeholder="Quantidade"

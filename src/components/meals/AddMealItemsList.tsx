@@ -10,8 +10,8 @@ import { FoodItem } from '@/types/meal';
 
 type AddMealItemsListProps = {
     items: FoodItem[],
-    onRemoveItem: (id: string) => void;
-    onEditItem: (id: string) => void;
+    onRemoveItem: (id: number) => void;
+    onEditItem: (id: number) => void;
 };
 
 export function AddMealItemsList({
@@ -30,7 +30,7 @@ export function AddMealItemsList({
                         </Text>
 
                         <Text className="mt-1 text-sm text-muted">
-                            {item.amountGrams} g · {item.calories} kcal
+                            {item.quantity_g} g · {item.calories} kcal
                         </Text>
                     </View>
 

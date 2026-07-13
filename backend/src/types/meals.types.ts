@@ -1,12 +1,16 @@
-import type { MealFoodWithFood } from "./meal-foods.type.js";
+import type { CreateMealItem, MealFoodWithFood } from "./meal-foods.type.js";
 export type CreateMealDTO = {
     type: MealType;
+    meal_date: Date;
+    items: CreateMealItem[];
 }
+
+export type CreateMealRepositoryDTO = Omit<CreateMealDTO, "items">;
 export type Meal = {
     id: number;
     type: MealType;
     meal_date: Date;
-    foods: MealFoodWithFood[];
+    items: MealFoodWithFood[];
 }
 
 export type MealResponse = {

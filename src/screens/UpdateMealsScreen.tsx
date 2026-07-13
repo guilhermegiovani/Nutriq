@@ -4,14 +4,14 @@
  */
 import { Text } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '@/navigation/types';
+import type { AppStackParamList } from '@/navigation/types';
 import { ROUTES } from '@/constants/routes';
 
 import { MealForm } from '@/components/meals/MealForm';
 import { ScreenContainer } from '@/components/ui/ScreenContainer';
 
 type Props = NativeStackScreenProps<
-  RootStackParamList,
+  AppStackParamList,
   typeof ROUTES.UPDATE_MEALS
 >;
 
@@ -21,7 +21,7 @@ export function UpdateMealsScreen({ route }: Props) {
   const initialMealItems = {
     id: meal.id,
     type: meal.type,
-    date: meal.date,
+    meal_date: meal.meal_date,
     items: meal.items,
     totalCalories: meal.totalCalories
   }

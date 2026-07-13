@@ -11,6 +11,10 @@ export const endpoints = {
     create: '/meals',
     byId: (id: number) => `/meals/${id}`,
   },
+  /** CRUD de alimentos */
+  foods: {
+    list: '/foods',
+  },
   /** Resumo calórico do dia (futuro) */
   diary: '/diary',
   /** Autenticação (futuro) */

@@ -11,8 +11,9 @@ import { ROUTES } from '@/constants/routes';
 import { useMeals } from '@/context/MealsContext';
 import type { AppStackParamList } from '@/navigation/types';
 import { getMeals } from '@/services/api/meals';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Meal } from '@/types/meal';
+import { useFocusEffect } from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.MEALS>;
 
@@ -25,9 +26,15 @@ export function MealsScreen({ navigation }: Props) {
   const totalDay = mealsToday?.reduce((sum, meal) => sum + meal.totalCalories, 0);
 
 
-  useEffect(() => {
-    loadMeals()
-  }, [])
+  // useEffect(() => {
+  //   loadMeals()
+  // }, [])
+  
+  useFocusEffect(
+    useCallback(() => {
+      loadMeals();
+    }, [])
+  );
 
   const loadMeals = async () => {
     try {

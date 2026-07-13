@@ -1,8 +1,14 @@
 import { getMealFoodsRepository } from "../repositories/meals_foods.repository.js";
-import type { Meal, MealItemResponse, MealResponse } from "../types/meals.types.js";
+import type { Meal, MealItemResponse, MealResponse, MealType } from "../types/meals.types.js";
 import { calculateFromFood } from "../util/nutrition.js";
 
-export async function buildMeal(meal: Meal): Promise<MealResponse> {
+export async function buildMeal(
+    meal: {
+        id: number;
+        type: MealType;
+        meal_date: Date;
+    }
+): Promise<MealResponse> {
     const foods = await getMealFoodsRepository(meal.id);
 
     const items: MealItemResponse[] = foods.map(food => ({

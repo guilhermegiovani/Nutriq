@@ -6,6 +6,11 @@ export type MealFoodWithFood = Food & {
     quantity_g: number;
 }
 
+export type CreateMealItem = {
+    food_id: number;
+    quantity_g: number;
+}
+
 export type MealFood = {
     id: number;
     meal_id: number;
