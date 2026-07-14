@@ -2,7 +2,7 @@ import { queryDB } from "../database/queryDB.js";
 import type { CreateMealDTO, CreateMealRepositoryDTO, Meal } from "../types/meals.types.js";
 
 export async function getRepositoryMeals(userId: number): Promise<Meal[]> {
-    const mealsDB = await queryDB('SELECT * FROM meals WHERE user_id = $1', [userId]);
+    const mealsDB = await queryDB('SELECT * FROM meals WHERE user_id = $1 ORDER BY meal_date DESC, id DESC', [userId]);
 
     return mealsDB.rows;
 }

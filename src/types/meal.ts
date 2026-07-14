@@ -33,7 +33,7 @@ export type MealItem = FoodItem & {
 
 /** Refeição completa do usuário */
 export type Meal = {
-  id: string;
+  id: number;
   /** Tipo: café, almoço, etc. */
   type: MealType;
   /** Data ISO (YYYY-MM-DD) */

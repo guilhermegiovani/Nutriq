@@ -18,10 +18,10 @@ import { useFocusEffect } from '@react-navigation/native';
 type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.MEALS>;
 
 export function MealsScreen({ navigation }: Props) {
-  //const { meals } = useMeals();
-  const [mealsApi, setMealsApi] = useState<Meal[]>([])
+  const { meals, loadMeals } = useMeals();
+  // const [mealsApi, setMealsApi] = useState<Meal[]>([])
   const today = new Date().toISOString().slice(0, 10);
-  const mealsToday = mealsApi.filter((meal) => meal.meal_date.slice(0, 10) === today)
+  const mealsToday = meals.filter((meal) => meal.meal_date.slice(0, 10) === today)
 
   const totalDay = mealsToday?.reduce((sum, meal) => sum + meal.totalCalories, 0);
 
@@ -29,28 +29,29 @@ export function MealsScreen({ navigation }: Props) {
   // useEffect(() => {
   //   loadMeals()
   // }, [])
-  
+
   useFocusEffect(
     useCallback(() => {
+      console.log("Tela ganhou foco");
       loadMeals();
     }, [])
   );
 
-  const loadMeals = async () => {
-    try {
-      const meals = await getMeals();
-      setMealsApi(meals)
+  // const loadMeals = async () => {
+  //   try {
+  //     const meals = await getMeals();
+  //     setMealsApi(meals)
 
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // }
 
   return (
     <ScreenContainer scrollable>
       <Text className="text-xl font-bold text-text">Refeições</Text>
       <Text className="mt-2 text-muted">
-        Total do dia: {totalDay} kcal · {mealsApi.length} registro(s)
+        Total do dia: {totalDay} kcal · {meals.length} registro(s)
       </Text>
 
       <View className="mt-6 gap-3">
@@ -63,7 +64,7 @@ export function MealsScreen({ navigation }: Props) {
           </Text>
         </Pressable>
 
-        <MealList meals={mealsApi} />
+        <MealList meals={meals} />
       </View>
     </ScreenContainer>
   );

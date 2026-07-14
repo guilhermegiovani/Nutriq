@@ -1,4 +1,4 @@
-import type { NativeStackNavigationProp  } from '@react-navigation/native-stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { AppStackParamList } from '@/navigation/types';
 import { Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -27,7 +27,10 @@ export function MealCard({ meal }: MealCardProps) {
   return (
     <View className="flex flex-row justify-between rounded-lg border border-slate-300 bg-surface px-4 py-3">
       <View>
-        <Text className="text-xs font-medium text-muted">
+        <Text className="text-xs text-muted">
+          {new Date(meal.meal_date).toLocaleDateString('pt-BR')}
+        </Text>
+        <Text className="text-sm font-medium text-muted">
           {MEAL_TYPE_LABELS[meal.type]}
         </Text>
         {items.map((item) => (
@@ -51,7 +54,7 @@ export function MealCard({ meal }: MealCardProps) {
 
       <View className='flex justify-center'>
         <Pressable
-          onPress={() => deleteMeal(meal)}
+          onPress={() => deleteMeal(meal.id)}
           className="items-center justify-center rounded-full p-2 active:opacity-70"
         >
           <Text>

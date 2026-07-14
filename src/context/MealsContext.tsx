@@ -12,51 +12,64 @@ import {
   type ReactNode,
 } from 'react';
 
-import type { Meal } from '@/types/meal';
+import type { CreateMealRequest, Meal } from '@/types/meal';
+import type { Dispatch, SetStateAction } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createMeal, deleteMealApi, getMeals } from '@/services/api/meals';
 
 type MealsContextValue = {
   /** Lista temporária em memória (some ao fechar o app) */
   meals: Meal[];
-  /** Adiciona uma refeição ao array */
-  addMeal: (meal: Meal) => void;
-  /** Salva no AsyncStorage  */
-  savedMealsStorage: (meals: Meal[]) => void;
-  /** Deletar refeição */
-  deleteMeal: (meal: Meal) => void
-  /** Deletar refeição */
-  updateMeal: (meal: Meal) => void
   /** Carrega as refeições  */
-  loadMeals: () => void;
-
+  loadMeals: () => Promise<void>;
+  /** Adiciona uma refeição ao array */
+  addMeal: (meal: CreateMealRequest) => Promise<void>;
+  /** Atualizar refeição */
+  updateMeal: (id:number, meal: Meal) => Promise<void>; // meal: UpdateMealRequest
+  /** Deletar refeição */
+  deleteMeal: (id:number) => Promise<void>;
+  
   /** Meta calórica */
   dailyGoal: number;
-  setDailyGoal: (goal: number) => void;
+  setDailyGoal: Dispatch<SetStateAction<number>>;
+  /** Salva no AsyncStorage  */
+  //savedMealsStorage: (meals: Meal[]) => void;
 };
 
 const MealsContext = createContext<MealsContextValue | null>(null);
 
 export function MealsProvider({ children }: { children: ReactNode }) {
   const [meals, setMeals] = useState<Meal[]>([]);
+  //const [mealsApi, setMealsApi] = useState<Meal[]>([])
   const [dailyGoal, setDailyGoal] = useState(0);
+
+  const loadMeals = useCallback(async (): Promise<void> => {
+    try {
+      const meals = await getMeals();
+      setMeals(meals)
+
+    } catch (error) {
+      console.error(error)
+    }
+  }, [])
 
   useEffect(() => {
     loadMeals()
-  }, [])
+  }, [loadMeals])
 
   useEffect(() => {
     loadDailyGoal()
   }, [])
 
-  const savedMealsStorage = useCallback(async (meals: Meal[]): Promise<void> => {
-    try {
-      const jsonData = JSON.stringify(meals);
+  // const savedMealsStorage = useCallback(async (meals: Meal[]): Promise<void> => {
+  //   try {
+  //     const jsonData = JSON.stringify(meals);
 
-      await AsyncStorage.setItem("meals", jsonData);
-    } catch (err) {
-      console.error("Erro ao salvar refeição: ", err);
-    }
-  }, []);
+  //     await AsyncStorage.setItem("meals", jsonData);
+  //   } catch (err) {
+  //     console.error("Erro ao salvar refeição: ", err);
+  //   }
+  // }, []);
 
   const savedDailyGoalStorage = useCallback(async (goal: number): Promise<void> => {
     try {
@@ -68,43 +81,25 @@ export function MealsProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  useEffect(() => {
-    console.log("Estado meals mudou:", meals);
-    console.log("É array?", Array.isArray(meals));
+  // useEffect(() => {
+  //   console.log("Estado meals mudou:", meals);
+  //   console.log("É array?", Array.isArray(meals));
 
-    savedMealsStorage(meals);
-  }, [meals]);
+  //   savedMealsStorage(meals);
+  // }, [meals]);
 
   useEffect(() => {
     savedDailyGoalStorage(dailyGoal);
   }, [dailyGoal]);
 
-  const addMeal = useCallback((meal: Meal) => {
+  const addMeal = useCallback(async (meal: CreateMealRequest) => {
     try {
-      const newMeals = [meal, ...meals]
-
-      setMeals(newMeals);
+      await createMeal(meal);
+      await loadMeals();
     } catch (err) {
       console.log("Erro ao adicionar refeição", err)
     }
-  }, [meals]);
-
-  const loadMeals = useCallback(async (): Promise<void> => {
-    try {
-      const savedMeals = await AsyncStorage.getItem("meals")
-      const parsedMeals = savedMeals ? JSON.parse(savedMeals) : []
-
-      if (!Array.isArray(parsedMeals)) {
-        console.warn("Meals inválido no storage:", parsedMeals);
-        setMeals([]);
-        return;
-      };
-      
-      setMeals(parsedMeals)
-    } catch (err) {
-      console.log("Erro ao carregar refeições.", err)
-    }
-  }, [])
+  }, [loadMeals]);
 
   const loadDailyGoal = useCallback(async (): Promise<void> => {
     try {
@@ -116,20 +111,20 @@ export function MealsProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const deleteMeal = useCallback(async (mealItem: Meal): Promise<void> => {
+  const deleteMeal = useCallback(async (id: number): Promise<void> => {
     try {
-      const newArray = meals.filter((item) => item.id !== mealItem.id)
-      setMeals(newArray)
+      await deleteMealApi(id);
+      await loadMeals();
 
     } catch (err) {
       console.log("Erro ao deletar refeição.", err)
     }
-  }, [meals])
+  }, [loadMeals])
 
-  const updateMeal = useCallback(async (meal: Meal): Promise<void> => {
+  const updateMeal = useCallback(async (id: number, meal: Meal): Promise<void> => {
     try {
       const updateMeals = meals.map((m) => {
-        if (m.id === meal.id) {
+        if (m.id === id) {
           return meal
         }
 
@@ -139,20 +134,20 @@ export function MealsProvider({ children }: { children: ReactNode }) {
       setMeals(updateMeals)
 
     } catch (err) {
-      console.log("Erro ao deletar refeição.", err)
+      console.log("Erro ao atualizar refeição.", err)
     }
   }, [meals])
 
   const value = useMemo(() => ({
     meals,
     addMeal,
-    savedMealsStorage,
+    //savedMealsStorage,
     loadMeals,
     deleteMeal,
     updateMeal,
     dailyGoal,
     setDailyGoal
-  }), [meals, addMeal, savedMealsStorage, loadMeals, deleteMeal, updateMeal, dailyGoal, setDailyGoal]);
+  }), [meals, addMeal, loadMeals, deleteMeal, updateMeal, dailyGoal, setDailyGoal]); // savedMealsStorage
 
   return (
     <MealsContext.Provider value={value}>{children}</MealsContext.Provider>

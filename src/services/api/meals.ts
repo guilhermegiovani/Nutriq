@@ -11,3 +11,12 @@ export async function getMeals(): Promise<Meal[]> {
     const { data } = await apiClient.get<Meal[]>(endpoints.meals.list);
     return data;
 }
+
+export async function deleteMealApi(id: number): Promise<Meal> {
+  const { data } = await apiClient.delete<{
+    message: string;
+    meal: Meal;
+  }>(endpoints.meals.byId(id));
+
+  return data.meal;
+}
