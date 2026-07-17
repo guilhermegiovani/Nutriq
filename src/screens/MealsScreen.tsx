@@ -25,27 +25,12 @@ export function MealsScreen({ navigation }: Props) {
 
   const totalDay = mealsToday?.reduce((sum, meal) => sum + meal.totalCalories, 0);
 
-
-  // useEffect(() => {
-  //   loadMeals()
-  // }, [])
-
   useFocusEffect(
     useCallback(() => {
       console.log("Tela ganhou foco");
       loadMeals();
     }, [])
   );
-
-  // const loadMeals = async () => {
-  //   try {
-  //     const meals = await getMeals();
-  //     setMealsApi(meals)
-
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }
 
   return (
     <ScreenContainer scrollable>

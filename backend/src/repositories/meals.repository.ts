@@ -1,5 +1,5 @@
 import { queryDB } from "../database/queryDB.js";
-import type { CreateMealDTO, CreateMealRepositoryDTO, Meal } from "../types/meals.types.js";
+import type { CreateMealDTO, CreateMealRepositoryDTO, Meal, UpdateMealData, UpdateMealRepositoryData } from "../types/meals.types.js";
 
 export async function getRepositoryMeals(userId: number): Promise<Meal[]> {
     const mealsDB = await queryDB('SELECT * FROM meals WHERE user_id = $1 ORDER BY meal_date DESC, id DESC', [userId]);
@@ -26,9 +26,9 @@ export async function deleteMealRepository(mealId: number, userId: number): Prom
     return mealDeleted.rows[0];
 }
 
-export async function updateMealRepository(mealId: number, userId: number, mealData: Partial<CreateMealDTO>): Promise<Meal | undefined> {
+export async function updateMealRepository(mealId: number, userId: number, mealData: UpdateMealRepositoryData): Promise<Meal | undefined> {
     const fieldsToUpdate:string[] = [];
-    const values:(string | number)[] = [];
+    const values = [];
 
     for (const [key, value] of Object.entries(mealData)) {
 

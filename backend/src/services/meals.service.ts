@@ -1,8 +1,8 @@
 import { createMealRepository, deleteMealRepository, getMealByIdRepository, getRepositoryMeals, updateMealRepository } from "../repositories/meals.repository.js";
-import type { CreateMealDTO, Meal, MealResponse, MealType } from "../types/meals.types.js";
+import type { CreateMealDTO, Meal, MealResponse, MealType, UpdateMealData } from "../types/meals.types.js";
 import { VALID_MEAL_TYPES } from "../types/meals.types.js";
 import { AppError } from "../errors/AppError.js";
-import { createMealFoodRepository, getMealFoodsRepository } from "../repositories/meals_foods.repository.js";
+import { createMealFoodRepository, deleteMealFoodsRepository, getMealFoodsRepository } from "../repositories/meals_foods.repository.js";
 import { calculateFromFood } from "../util/nutrition.js";
 import { buildMeal } from "./meal-builder.js";
 
@@ -63,7 +63,7 @@ export async function deleteMealService(mealId: number, userId: number) {
     return deletedMeal;
 }
 
-export async function updateMealService(mealId: number, userId: number, mealData: { name?: string, description?: string, type?: MealType }) {
+export async function updateMealService(mealId: number, userId: number, mealData: UpdateMealData): Promise<MealResponse> {
     // Here you would normally update the meal in a database
     const mealExists = await getMealByIdRepository(mealId, userId);
     if (!mealExists) {
@@ -75,8 +75,29 @@ export async function updateMealService(mealId: number, userId: number, mealData
     }
 
     // Here you would normally update the meal in a database
-    const updatedMeal = await updateMealRepository(mealId, userId, mealData);
+    const mealToUpdate = {
+        type: mealData.type,
+        meal_date: mealData.meal_date,
+    };
+
+    const updated = await updateMealRepository(mealId, userId, mealToUpdate);
+
+    if (!updated) {
+        throw new AppError(`Meal with ID ${mealId} not found`, 404);
+    }
+
+    await deleteMealFoodsRepository(mealId);
+
+    for (const item of mealData.items) {
+        await createMealFoodRepository(item, mealId)
+    }
+
+    const updatedMeal = await getMealByIdRepository(mealId, userId);
+
+    if (!updatedMeal) {
+        throw new AppError(`Meal with ID ${mealId} not found`, 404);
+    }
 
     // For demonstration purposes, we'll just return the updated meal
-    return updatedMeal;
+    return buildMeal(updatedMeal);
 }

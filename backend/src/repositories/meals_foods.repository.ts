@@ -21,8 +21,8 @@ export async function getMealFoodByIdRepository(mealFoodId: number): Promise<Mea
     return mealFoods.rows[0]
 }
 
-export async function deleteMealFoodRepository(mealId: number, mealFoodId: number): Promise<MealFood | undefined> {
-    const deletedMealFood = await queryDB("DELETE FROM meal_foods WHERE id = $1 AND meal_id = $2 RETURNING *", [mealFoodId, mealId])
+export async function deleteMealFoodsRepository(mealId: number): Promise<MealFood | undefined> {
+    const deletedMealFood = await queryDB("DELETE FROM meal_foods WHERE meal_id = $1 RETURNING *", [mealId])
 
     return deletedMealFood.rows[0]
 }

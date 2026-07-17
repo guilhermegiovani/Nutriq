@@ -1,4 +1,4 @@
-import { CreateMealRequest, Meal } from "@/types/meal";
+import { CreateMealRequest, Meal, UpdateMealRequest } from "@/types/meal";
 import { apiClient } from "./client";
 import { endpoints } from "./endpoints";
 
@@ -19,4 +19,9 @@ export async function deleteMealApi(id: number): Promise<Meal> {
   }>(endpoints.meals.byId(id));
 
   return data.meal;
+}
+
+export async function updateMealApi(id: number, meal: UpdateMealRequest): Promise<Meal> {
+  const { data } = await apiClient.patch<Meal>(endpoints.meals.byId(id), meal);
+  return data;
 }

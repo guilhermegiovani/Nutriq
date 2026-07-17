@@ -49,3 +49,9 @@ export type CreateMealRequest = {
   meal_date: string;
   items: CreateMealItem[];
 };
+
+export type UpdateMealRequest = {
+  type: MealType;
+  meal_date: string;
+  items: CreateMealItem[];
+};

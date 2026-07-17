@@ -1,7 +1,7 @@
 import { AppError } from "../errors/AppError.js";
 import { getFoodsByIdRepository } from "../repositories/foods.repository.js";
 import { getMealByIdRepository } from "../repositories/meals.repository.js";
-import { createMealFoodRepository, deleteMealFoodRepository, getMealFoodByIdRepository, getMealFoodsRepository, updateMealFoodRepository } from "../repositories/meals_foods.repository.js";
+import { createMealFoodRepository, deleteMealFoodsRepository, getMealFoodByIdRepository, getMealFoodsRepository, updateMealFoodRepository } from "../repositories/meals_foods.repository.js";
 import type { CreateMealFoodDTO, UpdateMealFoodDTO } from "../types/meal-foods.type.js";
 
 export async function createMealFoodService(MealFood: CreateMealFoodDTO, mealId: number, userId: number) {
@@ -65,7 +65,7 @@ export async function deleteMealFoodService(mealId: number, mealFoodId: number, 
         throw new AppError("Meal food does not belong to this meal", 400)
     }
 
-    const deletedMealFood = await deleteMealFoodRepository(mealId, mealFoodId)
+    const deletedMealFood = await deleteMealFoodsRepository(mealId)
 
     return deletedMealFood
 }

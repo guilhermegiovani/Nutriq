@@ -11,14 +11,14 @@ import { Input } from '@/components/ui/Input';
 import { OptionButton } from '@/components/ui/OptionButton';
 import { useMeals } from '@/context/MealsContext';
 import { foods } from '@/data/foods';
-import type { CreateMealRequest, FoodItem, Meal, MealItem, MealType } from '@/types/meal';
+import type { CreateMealRequest, FoodItem, Meal, MealItem, MealType, UpdateMealRequest } from '@/types/meal';
 import {
   calculateFromFood,
   findFoodByName,
   toGrams,
 } from '@/utils/nutrition';
 import { AddMealItemsList } from './AddMealItemsList';
-import { createMeal } from '@/services/api/meals';
+import { createMeal, updateMealApi } from '@/services/api/meals';
 import { Food } from '@/types/food';
 import { getFoods } from '@/services/api/foods';
 import { clsx } from 'clsx';
@@ -34,7 +34,7 @@ type MealFormProps = {
 
 export function MealForm({ initialData, isEditing }: MealFormProps) {
   const navigation = useNavigation();
-  const { addMeal, updateMeal } = useMeals();
+  const { addMeal, updateMeal, loadMeals } = useMeals();
 
   // Estados dos campos do formulário
   const [name, setName] = useState('');
@@ -82,23 +82,18 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
       0
     );
 
-    // const meal: CreateMeal = {
-    //   id: isEditing
-    //     ? initialData!.id
-    //     : String(Date.now()),
-    //   type: mealType,
-    //   meal_date: isEditing
-    //     ? initialData!.meal_date
-    //     : new Date().toISOString().slice(0, 10),
-    //   items: mealItems.map(item => ({
-    //     food_id: item.id,
-    //     quantity_g: item.quantity_g,
-    //   })),
-    //   totalCalories,
-    // };
+    const mealRequest: UpdateMealRequest = {
+      type: mealType,
+      meal_date: initialData?.meal_date ?? new Date().toISOString().slice(0, 10),
+      items: mealItems.map(item => ({
+        food_id: item.id,
+        quantity_g: item.quantity_g,
+      })),
+    };
 
     if (isEditing) {
       //updateMeal(meal)
+      updateMealApi(initialData!.id, mealRequest);
       console.log("Em breve: Implementar atualização de refeição no backend.");
     } else {
       const mealRequest: CreateMealRequest = {
@@ -113,6 +108,7 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
       await createMeal(mealRequest)
     }
 
+    await loadMeals()
     navigation.goBack();
   }
 

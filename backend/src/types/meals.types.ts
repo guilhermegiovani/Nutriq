@@ -13,6 +13,20 @@ export type Meal = {
     items: MealFoodWithFood[];
 }
 
+export type UpdateMealData = {
+  type: MealType;
+  meal_date: string;
+  items: {
+    food_id: number;
+    quantity_g: number;
+  }[];
+};
+
+export type UpdateMealRepositoryData = {
+  type: MealType;
+  meal_date: string;
+};
+
 export type MealResponse = {
     id: number;
     type: MealType;
