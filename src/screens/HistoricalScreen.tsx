@@ -11,11 +11,11 @@ export function HistoricalScreen() {
     const { meals } = useMeals();
     
     const sortedMeals = [...meals].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        (a, b) => new Date(b.meal_date).getTime() - new Date(a.meal_date).getTime()
     );
 
     const groupedByDate = sortedMeals.reduce((acc, meal) => {
-        const date = meal.date
+        const date = new Date(meal.meal_date).toLocaleDateString('pt-BR')
         if (!acc[date]) {
             acc[date] = [];
         }
@@ -41,7 +41,7 @@ export function HistoricalScreen() {
                             {meal.items.map((item) => (
                                 <View key={item.id} className="mt-2">
                                     <Text className="text-base text-text">
-                                        - {item.name} - {item.amountGrams}g - {item.calories} kcal
+                                        - {item.name} - {item.quantity_g}g - {item.calories} kcal
                                     </Text>
                                 </View>
                             ))}

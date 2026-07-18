@@ -19,7 +19,6 @@ type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.MEALS>;
 
 export function MealsScreen({ navigation }: Props) {
   const { meals, loadMeals } = useMeals();
-  // const [mealsApi, setMealsApi] = useState<Meal[]>([])
   const today = new Date().toISOString().slice(0, 10);
   const mealsToday = meals.filter((meal) => meal.meal_date.slice(0, 10) === today)
 

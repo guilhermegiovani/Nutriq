@@ -4,7 +4,10 @@ import { Pressable, Text, View } from 'react-native';
 import { ScreenContainer } from '@/components/ui/ScreenContainer';
 import { ROUTES } from '@/constants/routes';
 import type { AppStackParamList } from '@/navigation/types';
-import { useAuth } from '@/context/AuthContext';
+import { DailySummaryCard } from '@/components/dashboard/DailySummaryCard';
+import { useMeals } from '@/context/MealsContext';
+import { HomeActionCard } from '@/components/home/HomeActionCard';
+import { Utensils } from 'lucide-react-native';
 
 /** Props injetadas pelo React Navigation nesta tela */
 type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.HOME>;
@@ -14,7 +17,10 @@ type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.HOME>;
  * Dados virão da API quando o backend estiver pronto.
  */
 export function HomeScreen({ navigation }: Props) {
-  const { signOut } = useAuth()
+  const { meals, dailyGoal } = useMeals()
+  const today = new Date().toISOString().slice(0, 10);
+  const consumedToday = meals.filter((meal) => meal.meal_date.slice(0, 10) === today)
+  const totalConsumed = consumedToday?.reduce((sum, meal) => sum + meal.totalCalories, 0);
 
   return (
     <ScreenContainer>
@@ -23,33 +29,32 @@ export function HomeScreen({ navigation }: Props) {
         Controle suas calorias e refeições no dia a dia.
       </Text>
 
+      <DailySummaryCard consumed={totalConsumed} goal={dailyGoal} />
+
       <View className="mt-8 gap-3">
-        <Pressable
-          className="rounded-xl bg-primary px-4 py-3 active:opacity-80"
+        <HomeActionCard
+          title="Ver refeições"
+          icon={null}
           onPress={() => navigation.navigate(ROUTES.MEALS)}
-        >
-          <Text className="text-center font-semibold text-white">
-            Ver refeições
-          </Text>
-        </Pressable>
+          classNamePress="bg-primary"
+          classNameText="text-white"
+        />
 
-        <Pressable
-          className="rounded-xl border border-secondary px-4 py-3 active:opacity-80"
+        <HomeActionCard
+          title="Meu perfil"
+          icon={null}
           onPress={() => navigation.navigate(ROUTES.PROFILE)}
-        >
-          <Text className="text-center font-semibold text-secondary">
-            Meu perfil
-          </Text>
-        </Pressable>
+          classNamePress="border border-secondary"
+          classNameText="text-secondary"
+        />
 
-        <Pressable
-          className="rounded-xl border border-secondary px-4 py-3 active:opacity-80"
+        <HomeActionCard
+          title="Histórico de refeições"
+          icon={null}
           onPress={() => navigation.navigate(ROUTES.HISTORICAL)}
-        >
-          <Text className="text-center font-semibold text-secondary">
-            Histórico de refeições
-          </Text>
-        </Pressable>
+          classNamePress="border border-secondary"
+          classNameText="text-secondary"
+        />
       </View>
     </ScreenContainer>
   );

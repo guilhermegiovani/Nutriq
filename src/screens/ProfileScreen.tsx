@@ -11,6 +11,7 @@ import { InfoCard } from '@/components/ui/InfoCard';
 import { useState } from 'react';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useAuth } from '@/context/AuthContext';
+import { DailySummaryCard } from '@/components/dashboard/DailySummaryCard';
 
 type Props = NativeStackScreenProps<AppStackParamList, typeof ROUTES.PROFILE>;
 
@@ -22,7 +23,8 @@ export function ProfileScreen(_props: Props) {
   const today = new Date().toISOString().slice(0, 10);
   const [isActive, setIsActive] = useState<boolean>(false)
 
-  const consumedToday = meals.filter((meal) => meal.date === today)
+  const consumedToday = meals.filter((meal) => meal.meal_date.slice(0, 10) === today)
+  console.log("Consumido hoje:", consumedToday)
   const totalConsumed = consumedToday?.reduce((sum, meal) => sum + meal.totalCalories, 0);
   const remainingCalories = dailyGoal - totalConsumed;
   const progressPercentage = dailyGoal > 0
@@ -45,7 +47,7 @@ export function ProfileScreen(_props: Props) {
         </Text>
       </View>
 
-      <View className='flex gap-2 mt-4'>
+      <View className='flex mt-4'>
 
         <InfoCard title="Meta Calórica Diária">
           <View className="flex-row items-center justify-between gap-3">
@@ -73,25 +75,7 @@ export function ProfileScreen(_props: Props) {
           </View>
         </InfoCard>
 
-        <InfoCard title="Consumido hoje">
-          <Text className="text-2xl font-bold text-text">
-            {totalConsumed} kcal
-          </Text>
-        </InfoCard>
-
-        <InfoCard title="Restante">
-          <Text className="text-2xl font-bold text-text">
-            {remainingCalories} kcal
-          </Text>
-        </InfoCard>
-
-        <InfoCard title="Progresso">
-          <Text className="text-2xl font-bold text-primary">
-            {progressPercentage.toFixed(0)}%
-          </Text>
-          
-          <ProgressBar percentage={progressWidth} />
-        </InfoCard>
+        <DailySummaryCard consumed={totalConsumed} goal={dailyGoal} showGoal={false} />
 
         <Pressable
           className="rounded-xl border border-secondary px-4 py-3 mt-6 active:opacity-80"
