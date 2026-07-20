@@ -16,6 +16,7 @@ import type { CreateMealRequest, Meal } from '@/types/meal';
 import type { Dispatch, SetStateAction } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createMeal, deleteMealApi, getMeals } from '@/services/api/meals';
+import { Alert } from 'react-native';
 
 type MealsContextValue = {
   /** Lista temporária em memória (some ao fechar o app) */
@@ -25,10 +26,10 @@ type MealsContextValue = {
   /** Adiciona uma refeição ao array */
   addMeal: (meal: CreateMealRequest) => Promise<void>;
   /** Atualizar refeição */
-  updateMeal: (id:number, meal: Meal) => Promise<void>; // meal: UpdateMealRequest
+  updateMeal: (id: number, meal: Meal) => Promise<void>; // meal: UpdateMealRequest
   /** Deletar refeição */
-  deleteMeal: (id:number) => Promise<void>;
-  
+  deleteMeal: (id: number) => void;
+
   /** Meta calórica */
   dailyGoal: number;
   setDailyGoal: Dispatch<SetStateAction<number>>;
@@ -81,13 +82,6 @@ export function MealsProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   console.log("Estado meals mudou:", meals);
-  //   console.log("É array?", Array.isArray(meals));
-
-  //   savedMealsStorage(meals);
-  // }, [meals]);
-
   useEffect(() => {
     savedDailyGoalStorage(dailyGoal);
   }, [dailyGoal]);
@@ -111,14 +105,36 @@ export function MealsProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const deleteMeal = useCallback(async (id: number): Promise<void> => {
-    try {
-      await deleteMealApi(id);
-      await loadMeals();
+  const deleteMeal = useCallback((id: number): void => {
+    Alert.alert(
+      "Excluir refeição",
+      "Tem certeza que deseja excluir esta refeição?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteMealApi(id);
+              await loadMeals();
+            } catch (err) {
+              console.log("Erro ao deletar refeição.", err);
+            }
+          },
+        },
+      ]
+    );
+    // try {
+    //   // await deleteMealApi(id);
+    //   await loadMeals();
 
-    } catch (err) {
-      console.log("Erro ao deletar refeição.", err)
-    }
+    // } catch (err) {
+    //   console.log("Erro ao deletar refeição.", err)
+    // }
   }, [loadMeals])
 
   const updateMeal = useCallback(async (id: number, meal: Meal): Promise<void> => {

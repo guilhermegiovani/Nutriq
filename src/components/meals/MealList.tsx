@@ -11,9 +11,17 @@ type MealListProps = {
 export function MealList({ meals }: MealListProps) {
   if (meals.length === 0) {
     return (
-      <Text className="text-sm text-muted">
-        Nenhuma refeição salva ainda. Toque em &quot;Adicionar refeição&quot;.
-      </Text>
+      <View className="items-center justify-center py-16">
+        <Text className="text-5xl">🍽️</Text>
+
+        <Text className="mt-4 text-lg font-semibold text-text">
+          Nenhuma refeição cadastrada
+        </Text>
+
+        <Text className="mt-2 text-center text-muted">
+          Adicione sua primeira refeição para começar.
+        </Text>
+      </View>
     );
   }
 

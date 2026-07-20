@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/Button";
 import { Form } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
@@ -15,8 +16,10 @@ export function RegisterScreen({ navigation }: Props) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+    const [loading, setLoading] = useState(false);
 
     async function handleRegister() {
+        setLoading(true);
         try {
             const response = await register({
                 name,
@@ -29,6 +32,8 @@ export function RegisterScreen({ navigation }: Props) {
             navigation.replace(ROUTES.LOGIN);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -68,14 +73,13 @@ export function RegisterScreen({ navigation }: Props) {
                         onChange={(cp) => setConfirmPassword(cp)}
                     />
 
-                    <Pressable
-                        className="mt-4 rounded-xl bg-primary py-4 active:opacity-80"
+                    <Button
+                        title="Criar conta"
+                        loading={loading}
                         onPress={handleRegister}
-                    >
-                        <Text className="text-center font-semibold text-white">
-                            Criar conta
-                        </Text>
-                    </Pressable>
+                        className="bg-primary mt-4"
+                    />
+                    
                 </Form>
 
                 <View className="mt-8 flex-row justify-center">

@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/Button";
 import { Form } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
@@ -15,8 +16,10 @@ export function LoginScreen({ navigation }: Props) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const { signIn } = useAuth()
+    const [loading, setLoading] = useState(false);
 
     async function handleLogin() {
+        setLoading(true);
         try {
             const response = await signIn({
                 email,
@@ -26,6 +29,8 @@ export function LoginScreen({ navigation }: Props) {
             console.log(response);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -53,14 +58,12 @@ export function LoginScreen({ navigation }: Props) {
                         onChange={(p) => setPassword(p)}
                     />
 
-                    <Pressable
-                        className="mt-4 rounded-xl bg-primary py-4 active:opacity-80"
+                    <Button
+                        title="Entrar"
+                        loading={loading}
                         onPress={handleLogin}
-                    >
-                        <Text className="text-center font-semibold text-white">
-                            Entrar
-                        </Text>
-                    </Pressable>
+                        className="bg-primary mt-4"
+                    />
                 </Form>
 
                 <View className="mt-8 flex-row justify-center">

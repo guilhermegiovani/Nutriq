@@ -2,30 +2,26 @@
  * Formulário de criação e edição de refeições.
  * Permite adicionar alimentos, escolher unidade e salvar total calórico.
  */
+import { useNavigation } from '@react-navigation/native';
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
 import { Form } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
 import { OptionButton } from '@/components/ui/OptionButton';
 import { useMeals } from '@/context/MealsContext';
-import { foods } from '@/data/foods';
-import type { CreateMealRequest, FoodItem, Meal, MealItem, MealType, UpdateMealRequest } from '@/types/meal';
+import { getFoods } from '@/services/api/foods';
+import { createMeal, updateMealApi } from '@/services/api/meals';
+import { Food } from '@/types/food';
+import type { CreateMealRequest, FoodItem, Meal, MealType, UpdateMealRequest } from '@/types/meal';
 import {
   calculateFromFood,
   findFoodByName,
   toGrams,
 } from '@/utils/nutrition';
-import { AddMealItemsList } from './AddMealItemsList';
-import { createMeal, updateMealApi } from '@/services/api/meals';
-import { Food } from '@/types/food';
-import { getFoods } from '@/services/api/foods';
 import { clsx } from 'clsx';
-
-// type MealFormData = {
-
-// };
+import { Button } from '../ui/Button';
+import { AddMealItemsList } from './AddMealItemsList';
 
 type MealFormProps = {
   initialData?: Meal;
@@ -34,7 +30,8 @@ type MealFormProps = {
 
 export function MealForm({ initialData, isEditing }: MealFormProps) {
   const navigation = useNavigation();
-  const { addMeal, updateMeal, loadMeals } = useMeals();
+  const { loadMeals } = useMeals();
+  const [loading, setLoading] = useState(false);
 
   // Estados dos campos do formulário
   const [name, setName] = useState('');
@@ -71,45 +68,48 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
   }
 
   async function handleSave() {
+    setLoading(true);
 
-    if (mealItems.length === 0) {
-      setError('Adicione pelo menos um alimento.');
-      return;
-    }
+    try {
+      if (mealItems.length === 0) {
+        setError('Adicione pelo menos um alimento.');
+        return;
+      }
 
-    const totalCalories = mealItems.reduce(
-      (sum, item) => sum + item.calories,
-      0
-    );
-
-    const mealRequest: UpdateMealRequest = {
-      type: mealType,
-      meal_date: initialData?.meal_date ?? new Date().toISOString().slice(0, 10),
-      items: mealItems.map(item => ({
-        food_id: item.id,
-        quantity_g: item.quantity_g,
-      })),
-    };
-
-    if (isEditing) {
-      //updateMeal(meal)
-      updateMealApi(initialData!.id, mealRequest);
-      console.log("Em breve: Implementar atualização de refeição no backend.");
-    } else {
-      const mealRequest: CreateMealRequest = {
+      const mealRequest: UpdateMealRequest = {
         type: mealType,
-        meal_date: new Date().toISOString().slice(0, 10),
+        meal_date: initialData?.meal_date ?? new Date().toISOString().slice(0, 10),
         items: mealItems.map(item => ({
-          food_id: Number(item.id),
+          food_id: item.id,
           quantity_g: item.quantity_g,
         })),
       };
 
-      await createMeal(mealRequest)
-    }
+      if (isEditing) {
+        //updateMeal(meal)
+        await updateMealApi(initialData!.id, mealRequest);
+        console.log("Em breve: Implementar atualização de refeição no backend.");
+      } else {
+        const mealRequest: CreateMealRequest = {
+          type: mealType,
+          meal_date: new Date().toISOString().slice(0, 10),
+          items: mealItems.map(item => ({
+            food_id: Number(item.id),
+            quantity_g: item.quantity_g,
+          })),
+        };
 
-    await loadMeals()
-    navigation.goBack();
+        await createMeal(mealRequest)
+      }
+
+      await loadMeals()
+      navigation.goBack();
+
+    } catch (err) {
+      console.error('Error saving meal:', err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function addItem() {
@@ -137,6 +137,7 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
     console.log('Adding item: ', item.id);
 
     setMealItems((prev) => [...prev, item])
+
   }
 
   function removeItem(id: number) {
@@ -256,12 +257,12 @@ export function MealForm({ initialData, isEditing }: MealFormProps) {
 
       <AddMealItemsList items={mealItems} onRemoveItem={removeItem} onEditItem={editItem} />
 
-      <Pressable
-        className="w-full items-center justify-center rounded-lg bg-secondary px-4 py-3 active:opacity-80"
+      <Button
+        title="Salvar"
+        loading={loading}
         onPress={handleSave}
-      >
-        <Text className="font-semibold text-white">Salvar</Text>
-      </Pressable>
+        className="bg-secondary"
+      />
     </Form>
   );
 }

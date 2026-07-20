@@ -26,7 +26,6 @@ export function MealsScreen({ navigation }: Props) {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("Tela ganhou foco");
       loadMeals();
     }, [])
   );
